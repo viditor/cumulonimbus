@@ -1,11 +1,9 @@
-var server = require("express")();
+var express = require("express");
+var morgan = require("morgan");
 
-server.use(function(request, response, next)
-{
-	console.log("hello world!");
-	
-	next();
-});
+var server = express();
+
+server.use(morgan({format: "dev"}));
 
 server.post("/v1/hello", function(request, response)
 {

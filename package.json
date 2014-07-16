@@ -6,5 +6,9 @@
     "type": "git",
     "url": "https://github.com/arcym/viditor.cloud.git"
   },
-  "author": "Andrew McPherson"
+  "author": "Andrew McPherson",
+  "dependencies": {
+    "express": "~4.6.1",
+    "morgan": "~1.1.1"
+  }
 }
