@@ -1,0 +1,10 @@
+{
+  "name": "viditor.cloud",
+  "version": "0.0.1",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arcym/viditor.cloud.git"
+  },
+  "author": "Andrew McPherson"
+}
