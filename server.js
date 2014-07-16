@@ -1,14 +1,9 @@
 var express = require("express");
 var morgan = require("morgan");
 
-var server = express();
-
+server = express();
 server.use(morgan({format: "dev"}));
-
-server.post("/v1/hello", function(request, response)
-{
-	response.json({hello: "world!"});
-});
+server.use("/v1", require("./router.v1.js"));
 
 var port = process.env.PORT || 8080;
 console.log("Listening on " + port);
