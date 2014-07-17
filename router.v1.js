@@ -8,6 +8,25 @@ router.get("/youtube", function(request, response)
 	response.send(database);
 });
 
+router.get("/youtube/:ytid.:ext", function(request, response)
+{
+	var ytid = request.params.ytid;
+	var ext = request.params.ext;
+	console.log(ext);
+	
+	if(ext != "mp4" && ext != "webm" && ext != "ogv" && ext != "flv")
+	{
+		return response.send(404, {error: "Not a supported video extension."});
+	}
+	
+	if(!database[ytid])
+	{
+		return response.send(404, {error: "Unable to access the video."});
+	}
+	
+	response.sendfile("./archived_assets/" + ytid + "." + ext);
+});
+
 router.get("/youtube/:ytid", function(request, response)
 {
 	var ytid = request.params.ytid;
