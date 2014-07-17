@@ -1,0 +1,6 @@
+* databasing
+* user affiliation
+* required authentication
+* regular deletions
+* email reports
+* deployment
