@@ -9,6 +9,7 @@
   "author": "Andrew McPherson",
   "dependencies": {
     "express": "~4.6.1",
-    "morgan": "~1.1.1"
+    "morgan": "~1.1.1",
+    "mongojs": "~0.13.0"
   }
 }
