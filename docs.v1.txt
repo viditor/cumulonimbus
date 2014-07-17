@@ -1,0 +1,4 @@
+GET		cloud.viditor.io/v1/youtube
+GET		cloud.viditor.io/v1/youtube/:ytid
+POST	cloud.viditor.io/v1/youtube/:ytid
+DELETE	cloud.viditor.io/v1/youtube/:ytid
