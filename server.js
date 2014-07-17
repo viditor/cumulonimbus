@@ -1,8 +1,5 @@
-var express = require("express");
-var morgan = require("morgan");
-
-server = express();
-server.use(morgan({format: "dev"}));
+server = require("express")();
+server.use(require("morgan")({format: "dev"}));
 server.use("/v1", require("./router.v1.js"));
 
 var port = process.env.PORT || 8080;
