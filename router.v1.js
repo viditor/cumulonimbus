@@ -18,7 +18,7 @@ router.get("/youtube/:ytid", function(request, response)
 	}
 	else
 	{
-		response.send(404, "Invalid Youtube ID");
+		response.send(404, "Not Authorized");
 	}
 });
 
@@ -28,17 +28,15 @@ router.post("/youtube/:ytid", function(request, response)
 	
 	if(!database[ytid])
 	{
-		execute("ytdl.bat " + ytid, function(error, stdout, stderr)
+		var yturl = "http://www.youtube.com/watch?v=" + ytid;
+		var path = "archived_assets/" + ytid + ".flv";
+		
+		database[ytid] = {status: "downloading"};
+		response.send(200, database[ytid]);
+		
+		execute("ytdl " + yturl + " > " + path, function()
 		{
-			if(!stderr)
-			{
-				database[ytid] = "./archived_files/" + ytid + ".flv";
-				response.send(200);
-			}
-			else
-			{
-				response.send(404, stderr);
-			}
+			database[ytid].status = "archived";
 		});
 	}
 	else
