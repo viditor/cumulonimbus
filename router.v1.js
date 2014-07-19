@@ -14,14 +14,13 @@ var ERROR =
 
 router.get("/youtube", function(request, response)
 {
-	Asset.find({}, function(error, assets)
+	Asset.find({}).exec().then(function(assets)
 	{
-		if(error)
-		{
-			return response.send(404, {error: error});
-		}
-		
-		return response.send(200, assets);
+		response.send(200, assets);
+	},
+	function(reason)
+	{
+		response.send(404, reason);
 	});
 });
 
@@ -35,14 +34,22 @@ router.get("/youtube/:ytid.:ext", function(request, response)
 		return response.send(404, ERROR.UNSUPPORTED);
 	}
 	
-	Asset.findOne({ytid: ytid}, function(error, asset)
+	Asset.findOne({ytid: ytid}).exec().then(function(asset)
 	{
 		//todo: ensure the asset is finished transcoding.
 		
-		if(error) {return response.send(404, error.message);}
-		if(!asset) {return response.send(404, ERROR.INACCESSIBLE);}
-		
-		return response.sendfile(200, ARCHIVED_ASSETS + "/" + ytid + "." + ext);
+		if(asset)
+		{
+			response.sendfile(200, ARCHIVED_ASSETS + "/" + ytid + "." + ext);
+		}
+		else
+		{
+			response.send(404, ERROR.INACCESSIBLE);
+		}
+	},
+	function(reason)
+	{
+		response.send(404, reason);
 	});
 });
 
@@ -50,12 +57,20 @@ router.get("/youtube/:ytid", function(request, response)
 {
 	var ytid = request.params.ytid;
 	
-	Asset.findOne({ytid: ytid}, function(error, asset)
+	Asset.findOne({ytid: ytid}).exec().then(function(asset)
 	{
-		if(error) {return response.send(404, error.message);}
-		if(!asset) {return response.send(404, ERROR.INACCESSIBLE);}
-		
-		return response.send(200, asset);
+		if(asset)
+		{
+			response.send(200, asset);
+		}
+		else
+		{
+			response.send(404, ERROR.INACCESSIBLE);
+		}
+	},
+	function(reason)
+	{
+		response.send(404, reason);
 	});
 });
 
@@ -63,24 +78,24 @@ router.post("/youtube/:ytid", function(request, response)
 {
 	var ytid = request.params.ytid;
 	
-	Asset.findOne({ytid: ytid}, function(error, asset)
+	Asset.findOne({ytid: ytid}).exec().then(function(asset)
 	{
-		if(error)
-		{
-			return response.send(404, error.message);
-		}
-		
 		if(asset)
 		{
-			return response.send(200, asset);
+			return asset;
 		}
 		else
 		{
-			Asset.create({ytid: ytid}, function(error, asset)
-			{
-				return response.send(200, asset);
-			});
+			return Asset.create({ytid: ytid});
 		}
+	})
+	.then(function(asset)
+	{
+		response.send(200, asset);
+	},
+	function(reason)
+	{
+		response.send(404, reason);
 	});
 });
 
