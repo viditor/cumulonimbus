@@ -6,7 +6,8 @@ process.env.FFMPEG_PATH = "C:/FFMPEG/bin/ffmpeg.exe";
 var ERROR = 
 {
 	INACCESSIBLE: "Unable to access the asset.",
-	UNSUPPORTED: "Not a supported asset extension."
+	UNSUPPORTED: "Not a supported asset extension.",
+	INVALID_YTID: "Received an invalid youtube id."
 }
 
 mongoose = require("mongoose");
@@ -36,15 +37,18 @@ router.get("/youtube/:ytid.:ext", function(request, response)
 	var ytid = request.params.ytid;
 	var ext = request.params.ext;
 	
+	if(!/^.{11}$/.test(ytid))
+	{
+		return response.send(404, ERROR.INVALID_YTID);
+	}
+	
 	if(ext != "mp4" && ext != "webm" && ext != "ogv" && ext != "flv")
 	{
 		return response.send(404, ERROR.UNSUPPORTED);
 	}
 	
-	Asset.findOne({ytid: ytid}).exec().then(function(asset)
+	Asset.findOne({ytid: ytid, status: "archived"}).exec().then(function(asset)
 	{
-		//todo: ensure the asset is finished transcoding.
-		
 		if(asset)
 		{
 			response.sendfile(200, ARCHIVE + "/" + ytid + "." + ext);
@@ -63,6 +67,11 @@ router.get("/youtube/:ytid.:ext", function(request, response)
 router.get("/youtube/:ytid", function(request, response)
 {
 	var ytid = request.params.ytid;
+	
+	if(!/^.{11}$/.test(ytid))
+	{
+		return response.send(404, ERROR.INVALID_YTID);
+	}
 	
 	Asset.findOne({ytid: ytid}).exec().then(function(asset)
 	{
@@ -84,6 +93,11 @@ router.get("/youtube/:ytid", function(request, response)
 router.post("/youtube/:ytid", function(request, response)
 {
 	var ytid = request.params.ytid;
+	
+	if(!/^.{11}$/.test(ytid))
+	{
+		return response.send(404, ERROR.INVALID_YTID);
+	}
 	
 	Asset.findOne({ytid: ytid}).exec()
 	
