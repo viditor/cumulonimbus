@@ -1,6 +1,8 @@
 router = module.exports = require("express").Router();
 
-var ARCHIVE = __dirname + "/archived_assets";
+process.env.ASSET_ARCHIVE = ARCHIVE = __dirname + "/archived_assets";
+process.env.FFMPEG_PATH = "C:/FFMPEG/bin/ffmpeg.exe";
+
 var ERROR = 
 {
 	INACCESSIBLE: "Unable to access the asset.",
@@ -12,15 +14,20 @@ mongoose.connect("localhost/viditcloud");
 Asset = require("./asset.schema.js");
 Asset.remove({}, function(error) {});
 
+var q = require("q");
+
+var youtuber = require("./youtuber.js");
+var ffmpeger = require("./ffmpeger.js");
+
 router.get("/youtube", function(request, response)
 {
 	Asset.find({}).exec().then(function(assets)
 	{
 		response.send(200, assets);
 	},
-	function(reason)
+	function(error)
 	{
-		response.send(404, reason);
+		response.send(404, error);
 	});
 });
 
@@ -47,9 +54,9 @@ router.get("/youtube/:ytid.:ext", function(request, response)
 			response.send(404, ERROR.INACCESSIBLE);
 		}
 	},
-	function(reason)
+	function(error)
 	{
-		response.send(404, reason);
+		response.send(404, error);
 	});
 });
 
@@ -68,9 +75,9 @@ router.get("/youtube/:ytid", function(request, response)
 			response.send(404, ERROR.INACCESSIBLE);
 		}
 	},
-	function(reason)
+	function(error)
 	{
-		response.send(404, reason);
+		response.send(404, error);
 	});
 });
 
@@ -88,20 +95,35 @@ router.post("/youtube/:ytid", function(request, response)
 		}
 		else
 		{
-			return Asset.create({ytid: ytid});
+			return Asset.create({ytid: ytid})
+			.then(function(asset)
+			{
+				q.fcall(function()
+				{
+					asset.set("status", "downloading").save();
+					return youtuber.download(asset.ytid);
+				})
+				.then(function()
+				{
+					asset.set("status", "transcoding").save();
+					return ffmpeger.transcode(asset.ytid);
+				})
+				.then(function()
+				{
+					asset.set("status", "archived").save();
+				});
+				
+				return asset;
+			});
 		}
-	},
-	function()
-	{
-		response.send(404);
-		
-		//hmm.. but does this still
-		//continue to the next .then?
 	})
-	
 	.then(function(asset)
 	{
-		response.send(asset);
+		response.send(200, asset);
+	},
+	function(error)
+	{
+		response.send(404, error);
 	})
 	
 	.end();

@@ -23,7 +23,7 @@ function subtranscode(ytid, input, output, vcodec, acodec)
 	if(acodec) {transcoding.audioCodec(acodec);}
 	
 	transcoding.on("error", function(error) {deferred.reject(error);});
-	transcoding.on("progress", function(progress) {console.log(progress.frames);});
+	//transcoding.on("progress", function(progress) {console.log(output, progress.frames);});
 	transcoding.on("end", function() {deferred.resolve(output);});
 
 	transcoding.run();
