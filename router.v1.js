@@ -1,9 +1,11 @@
 router = module.exports = require("express").Router();
 
 var ARCHIVED_ASSETS = __dirname + "/archived_assets";
+process.env.FFMPEG_PATH = "C:/FFMPEG/bin/ffmpeg.exe";
 
 var execute = require("child_process").exec;
 var database = require("mongojs")("viditorcloud", ["assets"]);
+var ffmpeg = require("fluent-ffmpeg");
 
 database.assets.remove({});
 
@@ -78,7 +80,21 @@ router.post("/youtube/:ytid", function(request, response)
 				var filepath = ARCHIVED_ASSETS + "/" + ytid + ".flv";
 				execute("ytdl " + yturl + " > " + filepath, function()
 				{
-					database.assets.update({ytid: ytid}, {$set: {status: "archived"}});
+					database.assets.update({ytid: ytid}, {$set: {status: "transcoding"}});
+					
+					var transcoding = ffmpeg(filepath);
+					
+					transcoding.on("error", function(error)
+					{
+						console.log({error: error.message});
+					});
+
+					transcoding.on("end", function()
+					{
+						database.assets.update({ytid: ytid}, {$set: {status: "archived"}});
+					});
+
+					transcoding.save(ARCHIVED_ASSETS + "/" + ytid + ".webm");
 				});
 				
 				return response.send(200, asset); //asset?!
