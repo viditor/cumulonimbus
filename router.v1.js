@@ -1,19 +1,13 @@
 router = module.exports = require("express").Router();
 
-process.env.FFMPEG_PATH = "C:/FFMPEG/bin/ffmpeg.exe";
 var ARCHIVE = __dirname + "/archived_assets";
-
 var ERROR = 
 {
 	INACCESSIBLE: "Unable to access the asset.",
 	UNSUPPORTED: "Not a supported asset extension."
 }
 
-var fs = require("fs");
-var ytdl = require("ytdl-core");
-var ffmpeg = require("fluent-ffmpeg");
-var mongoose = require("mongoose");
-
+mongoose = require("mongoose");
 mongoose.connect("localhost/viditcloud");
 Asset = require("./asset.schema.js");
 Asset.remove({}, function(error) {});
@@ -96,27 +90,18 @@ router.post("/youtube/:ytid", function(request, response)
 		{
 			return Asset.create({ytid: ytid});
 		}
-	})
-	
-	.then(function(asset)
-	{
-		response.send(201, asset);
-		return asset;
 	},
-	function(asset)
+	function()
 	{
-		response.send(200, asset);
-		throw asset;
+		response.send(404);
+		
+		//hmm.. but does this still
+		//continue to the next .then?
 	})
 	
 	.then(function(asset)
 	{
-		console.log(asset);
-	})
-	
-	.then(function(asset)
-	{
-		console.log("done with asset!");
+		response.send(asset);
 	})
 	
 	.end();
