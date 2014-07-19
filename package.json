@@ -13,6 +13,7 @@
     "mongoose": "~3.8.13",
     "q": "~1.0.1",
     "ytdl-core": "~0.2.1",
-    "fluent-ffmpeg": "~2.0.0-rc1"
+    "fluent-ffmpeg": "~2.0.0-rc1",
+    "nodemailer": "~1.0.3"
   }
 }

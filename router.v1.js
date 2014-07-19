@@ -10,8 +10,6 @@ var ERROR =
 	INVALID_YTID: "Received an invalid youtube id."
 }
 
-mongoose = require("mongoose");
-mongoose.connect("localhost/viditcloud");
 Asset = require("./asset.schema.js");
 Asset.remove({}, function(error) {});
 
