@@ -1,16 +1,22 @@
 router = module.exports = require("express").Router();
 
-mongoose = require("mongoose");
-mongoose.connect("localhost/viditcloud");
-
-Asset = require("./asset.schema.js");
-Asset.remove({}, function(error) {});
+process.env.FFMPEG_PATH = "C:/FFMPEG/bin/ffmpeg.exe";
+var ARCHIVE = __dirname + "/archived_assets";
 
 var ERROR = 
 {
 	INACCESSIBLE: "Unable to access the asset.",
 	UNSUPPORTED: "Not a supported asset extension."
 }
+
+var fs = require("fs");
+var ytdl = require("ytdl-core");
+var ffmpeg = require("fluent-ffmpeg");
+var mongoose = require("mongoose");
+
+mongoose.connect("localhost/viditcloud");
+Asset = require("./asset.schema.js");
+Asset.remove({}, function(error) {});
 
 router.get("/youtube", function(request, response)
 {
@@ -40,7 +46,7 @@ router.get("/youtube/:ytid.:ext", function(request, response)
 		
 		if(asset)
 		{
-			response.sendfile(200, ARCHIVED_ASSETS + "/" + ytid + "." + ext);
+			response.sendfile(200, ARCHIVE + "/" + ytid + "." + ext);
 		}
 		else
 		{
@@ -78,7 +84,9 @@ router.post("/youtube/:ytid", function(request, response)
 {
 	var ytid = request.params.ytid;
 	
-	Asset.findOne({ytid: ytid}).exec().then(function(asset)
+	Asset.findOne({ytid: ytid}).exec()
+	
+	.then(function(asset)
 	{
 		if(asset)
 		{
@@ -89,18 +97,27 @@ router.post("/youtube/:ytid", function(request, response)
 			return Asset.create({ytid: ytid});
 		}
 	})
+	
 	.then(function(asset)
 	{
-		response.send(200, asset);
+		response.send(201, asset);
+		return asset;
 	},
-	function(reason)
+	function(asset)
 	{
-		response.send(404, reason);
-	});
+		response.send(200, asset);
+		throw asset;
+	})
+	
+	.then(function(asset)
+	{
+		console.log(asset);
+	})
+	
+	.then(function(asset)
+	{
+		console.log("done with asset!");
+	})
+	
+	.end();
 });
-
-var ARCHIVED_ASSETS = __dirname + "/archived_assets";
-process.env.FFMPEG_PATH = "C:/FFMPEG/bin/ffmpeg.exe";
-
-var execute = require("child_process").exec;
-var ffmpeg = require("fluent-ffmpeg");
