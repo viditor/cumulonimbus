@@ -18,6 +18,11 @@ var q = require("q");
 var youtuber = require("./youtuber.js");
 var ffmpeger = require("./ffmpeger.js");
 
+router.get("/", function(request, response)
+{
+	response.sendfile("docs.v1.txt");
+});
+
 router.get("/youtube", function(request, response)
 {
 	Asset.find({}).exec().then(function(assets)
@@ -49,7 +54,7 @@ router.get("/youtube/:ytid.:ext", function(request, response)
 	{
 		if(asset)
 		{
-			response.sendfile(200, ARCHIVE + "/" + ytid + "." + ext);
+			response.sendfile(ARCHIVE + "/" + ytid + "." + ext);
 		}
 		else
 		{
