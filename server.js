@@ -1,4 +1,5 @@
 server = require("express")();
+server.use(require("body-parser").urlencoded({extended: true}));
 server.use(require("morgan")({format: "dev"}));
 server.use("/v1", require("./router.v1.js"));
 

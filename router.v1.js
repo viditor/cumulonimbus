@@ -145,3 +145,10 @@ router.post("/youtube/:ytid", function(request, response)
 	
 	.end();
 });
+
+router.post("/compile", function(request, response)
+{
+	console.log(request.body);
+	
+	response.send(200);
+});

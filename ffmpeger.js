@@ -4,13 +4,13 @@ var q = require("q");
 module.exports.transcode = function(ytid)
 {
 	return q.all([
-		subtranscode(ytid, "flv", "mp4", "libx264"),
-		subtranscode(ytid, "flv", "webm", "libvpx", "libvorbis"),
-		subtranscode(ytid, "flv", "ogv", "libtheora", "libvorbis")
+		transcode(ytid, "flv", "mp4", "libx264"),
+		transcode(ytid, "flv", "webm", "libvpx", "libvorbis"),
+		transcode(ytid, "flv", "ogv", "libtheora", "libvorbis")
 	]);
 }
 
-function subtranscode(ytid, input, output, vcodec, acodec)
+function transcode(ytid, input, output, vcodec, acodec)
 {
 	var deferred = q.defer();
 	
@@ -29,4 +29,15 @@ function subtranscode(ytid, input, output, vcodec, acodec)
 	transcoding.run();
 	
 	return deferred.promise;
+}
+
+function merge()
+{
+	//https://github.com/fluent-ffmpeg/node-fluent-ffmpeg#mergetofilefilename-tmpdir-concatenate-multiple-inputs
+}
+
+function trim()
+{
+	//https://github.com/fluent-ffmpeg/node-fluent-ffmpeg#seektime-seek-output
+	//https://github.com/fluent-ffmpeg/node-fluent-ffmpeg#durationtime-set-output-duration
 }
