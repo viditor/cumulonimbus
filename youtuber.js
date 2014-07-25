@@ -10,6 +10,7 @@ module.exports.download = function(ytid)
 	
 	downloading.on("error", function(error) {deferred.reject(error);});
 	//downloading.on("data", function(data) {console.log(data);});
+	//downloading.on("info", function(info) {console.log(info.title);});
 	downloading.on("end", function() {deferred.resolve(ytid);});
 	
 	downloading.pipe(fs.createWriteStream(process.env.ASSET_ARCHIVE + "/" + ytid + ".flv"));
