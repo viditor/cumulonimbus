@@ -18,6 +18,13 @@ var q = require("q");
 var youtuber = require("./youtuber.js");
 var ffmpeger = require("./ffmpeger.js");
 
+router.use(function(request, response, next)
+{
+	response.header("Access-Control-Allow-Origin", "*");
+	response.header("Access-Control-Allow-Headers", "X-Requested-With");
+	next();
+});
+
 router.get("/", function(request, response)
 {
 	response.sendfile("docs.v1.txt");
