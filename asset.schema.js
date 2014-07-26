@@ -14,6 +14,14 @@ var asset = mongoose.Schema({
 	status:
 	{
 		type: String
+	},
+	title:
+	{
+		type: String
+	},
+	length:
+	{
+		type: Number
 	}
 	
 });

@@ -119,13 +119,12 @@ router.post("/youtube/:ytid", function(request, response)
 		}
 		else
 		{
-			return Asset.create({ytid: ytid})
-			.then(function(asset)
+			return Asset.create({ytid: ytid}).then(function(asset)
 			{
 				q.fcall(function()
 				{
 					asset.set("status", "downloading").save();
-					return youtuber.download(asset.ytid);
+					return youtuber.download(asset);
 				})
 				.then(function()
 				{
