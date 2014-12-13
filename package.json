@@ -1,0 +1,29 @@
+{
+  "name": "cumulonimbus",
+  "version": "0.0.0",
+  "description": "video editing cloud server for viditor",
+  "keywords": [
+    "video editing",
+    "cloud server",
+    "viditor"
+  ],
+  "contributors": [
+    "Andrew McPherson",
+    "Stuart French",
+    "John Angele",
+    "Tim Zorca"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/viditor/cumulonimbus"
+  },
+  "scripts": {
+    "start": "node server"
+  },
+  "engines": {
+    "node" : ">=0.10.3"
+  },
+  "dependencies": {
+  },
+  "license": "MIT"
+}
