@@ -1,9 +1,0 @@
-* user affiliation
-* required authentication
-* regular deletions
-* email reports
-* deployment
-
-http://oauth.net/
-http://httpstatus.es/
-http://en.wikipedia.org/wiki/ISO_8601
