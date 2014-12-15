@@ -1,3 +1,23 @@
 # Viditor Cloud
 
-A server for supporting the operations of Viditor, by managing, transcoding, streaming, and compiling the assets used in video editing. For more details, check out our [GoogleDoc for Project Plans](http://bit.ly/1IM9AwP), or checkout our [Trello for Project Tasks](trello.com/b/2EGkTVaf/viditor).
+A cloud server for video editing.
+
+### Resources
+
+Management Resources
+
+- [Trello](https://trello.com/b/2EGkTVaf/viditor)
+- [GoogleDocs](https://docs.google.com/document/d/1JMASJFajASLxfeHwaupPizOdF50zrgvLe1K3zUOYAns)
+- [Github](https://github.com/viditor/cumulonimbus)
+
+Information Resources
+
+- [Wordpress](http://blog.viditor.us)
+- [GithubPage](http://viditor.us)
+
+Social Resources
+
+- [Twitter](https://twitter.com/viditor_project)
+- [Google+](plus.google.com/114199756287028376570)
+- [Facebook](facebook.com/viditorpage)
+- [Youtube](youtube.com/user/viditorproject)
