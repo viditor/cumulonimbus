@@ -1,4 +1,4 @@
-# Viditor Cloud
+# Cumulonimbus
 
 A cloud server for video editing.
 
