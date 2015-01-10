@@ -1,0 +1,56 @@
+
+## sources
+## http://docs.travis-ci.com/user/getting-started/
+## http://docs.travis-ci.com/user/languages/javascript-with-nodejs/
+## http://docs.travis-ci.com/user/build-configuration/#.travis.yml-file%3A-what-it-is-and-how-it-is-used
+## Travis-CI social continuous intergration (T3CON12DE) https://www.youtube.com/watch?v=JicPX7K_dJs
+## Testing Django with Travis CI https://www.youtube.com/watch?v=uFRJsbV8W_4#t=8m27s
+## Testing .travis.yml files http://lint.travis-ci.org/
+
+language: node_js
+node_js:
+  ## versions to test against
+  - "0.11"
+  - "0.10"
+  - "0.8"
+  - "0.6"
+
+## Use this to prepare the system to install prerequisites or dependencies 
+# before_install:
+# - ""
+
+## Use this to install any prerequisites
+## or dependencies necessary to run your build
+# install:
+# - ""
+
+# env:
+# - ""
+
+## Use this to prepare your build for testing
+## e.g. copy database configurations, environment variables, etc.
+# before_script:
+#
+
+## Default is specific to project language
+## All commands must exit with code 0 on success. Anything else is considered failure.
+## You can specify the main build command to run
+## instead of the default e.g. script: "./run-tests.sh"
+# script:
+
+# after_script:
+
+# after_success:
+#  - ""
+
+# after_failure:
+#  - ""
+
+# notifications:
+#   email:
+#     recipients:
+#       - balh@blah.org
+#       - blah@balh.org
+#     on_success: [always|never|change]
+#     on_failure: [always|never|change]
+#   webhooks:  blah.org/travisci
