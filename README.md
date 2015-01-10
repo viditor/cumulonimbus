@@ -1,4 +1,4 @@
-# Project Cumulonimbus #
+# Cumulonimbus #
 
 A cloud server for video editing.
 
