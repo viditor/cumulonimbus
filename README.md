@@ -2,9 +2,8 @@
 
 A cloud server for video editing.
 
-[![TravisCI](https://travis-ci.org/viditor/cumulonimbus.svg)](https://travis-ci.org/viditor/cumulonimbus)
-
-![Viditor Logo](logo.png)
+[![Build](https://travis-ci.org/viditor/cumulonimbus.svg)](https://travis-ci.org/viditor/cumulonimbus)
+[![License](http://img.shields.io/:license-mit-blue.svg)](http://cumulonimbus.mit-license.org)
 
 ### Resources ###
 
