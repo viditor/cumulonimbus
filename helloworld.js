@@ -1,4 +1,6 @@
 var express = require("express")
+var sendGreeting = require("./greeter.js").sendGreeting
+var sendSqrt = require("./square-rooter.js").sendSqrt
 
 var app = express()
 
@@ -12,14 +14,3 @@ var server = app.listen(3000, function()
 
     console.log("Example app listening at http://%s:%s", host, port)
 })
-
-function sendGreeting(request, response)
-{
-    response.send("hello world");
-}
-
-function sendSqrt(request, response)
-{
-    var num = request.query.num;
-    response.send("The square root of " + num + " is " + Math.sqrt(num));
-}
