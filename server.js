@@ -1,2 +1,16 @@
-console.log("A message");
-console.log("Yet another message.");
+var express = require("express")
+var sendGreeting = require("./greeter.js").sendGreeting
+var sendSqrt = require("./square-rooter.js").sendSqrt
+
+var app = express()
+
+app.get("/greet", sendGreeting)
+app.get("/sqrt", sendSqrt)
+
+var server = app.listen(3000, function()
+{
+    var host = server.address().address
+    var port = server.address().port
+
+    console.log("Example app listening at http://%s:%s", host, port)
+})
