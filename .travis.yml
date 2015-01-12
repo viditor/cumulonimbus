@@ -22,6 +22,7 @@ node_js:
 ## Use this to install any prerequisites
 ## or dependencies necessary to run your build
 install:
+  - "npm install"
   - "npm i -g jasmine-node"
 
 # env:
