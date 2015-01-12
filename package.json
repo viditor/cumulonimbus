@@ -27,5 +27,8 @@
   "dependencies": {
     "express": "~4.10.6"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "frisby": "~0.8.5"
+  }
 }

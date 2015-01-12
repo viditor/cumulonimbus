@@ -12,8 +12,8 @@ node_js:
   ## versions to test against
   - "0.11"
   - "0.10"
-  - "0.8"
-  - "0.6"
+# - "0.8"
+# - "0.6" 
 
 ## Use this to prepare the system to install prerequisites or dependencies 
 # before_install:
@@ -21,17 +21,19 @@ node_js:
 
 ## Use this to install any prerequisites
 ## or dependencies necessary to run your build
-# install:
-# - ""
+install:
+  - "npm install"                              # may be default???
+  - "npm install -g jasmine-node"
+  - "npm install forever -g"
 
-# env:
+  # env:
 # - ""
 
 ## Use this to prepare your build for testing
 ## e.g. copy database configurations, environment variables, etc.
 ## http://stackoverflow.com/questions/12336566/travis-ci-with-jasmine-node
 before_script:
-    - "npm i -g jasmine-node"
+  - "forever start server.js"
 
 
 ## Default is specific to project language
