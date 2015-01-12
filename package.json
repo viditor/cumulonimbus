@@ -29,6 +29,6 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "frisby": "^0.8.5"
+    "frisby": "~0.8.5"
   }
 }
