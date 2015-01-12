@@ -18,7 +18,8 @@
     "url": "https://github.com/viditor/cumulonimbus"
   },
   "scripts": {
-    "start": "node server",
+    "start": "forever start server",
+    "stop": "forever stop server",
     "test": "jasmine-node specs --verbose"
   },
   "engines": {

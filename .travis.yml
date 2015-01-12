@@ -33,7 +33,7 @@ install:
 ## e.g. copy database configurations, environment variables, etc.
 ## http://stackoverflow.com/questions/12336566/travis-ci-with-jasmine-node
 before_script:
-  - "forever start server.js"
+  - "npm start"
 
 
 ## Default is specific to project language
@@ -42,7 +42,8 @@ before_script:
 ## instead of the default e.g. script: "./run-tests.sh"
 # script:
 
-# after_script:
+after_script:
+  - "npm stop"
 
 # after_success:
 #  - ""

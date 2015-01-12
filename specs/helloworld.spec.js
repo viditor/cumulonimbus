@@ -1,4 +1,3 @@
-//var helloworld = require("../helloworld.js");
 var frisby = require("frisby");
 
 var serverAddress = "http://localhost:3000";
