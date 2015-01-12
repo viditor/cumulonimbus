@@ -22,17 +22,18 @@ node_js:
 ## Use this to install any prerequisites
 ## or dependencies necessary to run your build
 install:
-  - "npm install"
-  - "npm i -g jasmine-node"
+  - "npm install"                              # may be default???
+  - "npm install -g jasmine-node"
+  - "npm install forever -g"
 
-# env:
+  # env:
 # - ""
 
 ## Use this to prepare your build for testing
 ## e.g. copy database configurations, environment variables, etc.
 ## http://stackoverflow.com/questions/12336566/travis-ci-with-jasmine-node
-# before_script:
-# - ""
+before_script:
+  - "forever start server.js"
 
 
 ## Default is specific to project language
