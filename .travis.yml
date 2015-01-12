@@ -12,8 +12,8 @@ node_js:
   ## versions to test against
   - "0.11"
   - "0.10"
-  - "0.8"
-  - "0.6"
+# - "0.8"
+# - "0.6" 
 
 ## Use this to prepare the system to install prerequisites or dependencies 
 # before_install:
