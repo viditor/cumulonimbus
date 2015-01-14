@@ -26,10 +26,11 @@
     "node": ">=0.10.3"
   },
   "dependencies": {
-    "express": "~4.10.6"
+    "express": "~4.10.6",
+    "mongoose": "^3.8.21"
   },
-  "license": "MIT",
   "devDependencies": {
     "frisby": "~0.8.5"
-  }
+  },
+  "license": "MIT"
 }
