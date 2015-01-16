@@ -1,11 +1,12 @@
 var express = require("express")
-var sendGreeting = require("./greeter.js").sendGreeting
-var sendSqrt = require("./square-rooter.js").sendSqrt
+var sendGreeting = require("./source/greeter").sendGreeting
+var sendSqrt = require("./source/square-rooter").sendSqrt
 
 var app = express()
 
 app.get("/greet", sendGreeting)
 app.get("/sqrt", sendSqrt)
+
 
 var server = app.listen(3000, function()
 {
