@@ -26,7 +26,7 @@
     "node": ">=0.10.3"
   },
   "dependencies": {
-    "express": "~4.10.6",
+    "express": "~4.10.6"
   },
   "license": "MIT",
   "devDependencies": {
