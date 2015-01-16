@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "express": "~4.10.6",
-    "mongojs": "^0.18.0"
   },
   "license": "MIT",
   "devDependencies": {
