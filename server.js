@@ -7,8 +7,9 @@ var app = express()
 app.get("/greet", sendGreeting)
 app.get("/sqrt", sendSqrt)
 
+var port = process.env.PORT || 8080;
 
-var server = app.listen(3000, function()
+var server = app.listen(port, function()
 {
     var host = server.address().address
     var port = server.address().port
