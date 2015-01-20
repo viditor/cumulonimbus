@@ -7,6 +7,8 @@ var app = express()
 app.get("/greet", sendGreeting)
 app.get("/sqrt", sendSqrt)
 
+app.use("/v2", require("./source/router.v2.js"))
+
 var port = process.env.PORT || 8080;
 
 var server = app.listen(port, function()
