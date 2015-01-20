@@ -18,14 +18,19 @@
     "url": "https://github.com/viditor/cumulonimbus"
   },
   "scripts": {
-    "start": "node server",
+    "start": "forever start server.js",
+    "stop": "forever stop server.js",
     "test": "jasmine-node specs --verbose"
   },
   "engines": {
     "node": ">=0.10.3"
   },
   "dependencies": {
-    "express": "~4.10.6"
+    "express": "~4.10.6",
+    "mongoose": "^3.8.21"
+  },
+  "devDependencies": {
+    "frisby": "~0.8.5"
   },
   "license": "MIT"
 }
