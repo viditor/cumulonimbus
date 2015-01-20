@@ -9,6 +9,12 @@ app.get("/sqrt", sendSqrt)
 
 var port = process.env.PORT || 8080;
 
+app["all"]("*", function(request, response)
+{
+    response.sendStatus(404);
+    response.send("put error message here");
+});
+
 var server = app.listen(port, function()
 {
     var host = server.address().address
