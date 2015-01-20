@@ -5,6 +5,6 @@ router["get"]("/", function(request, response)
     response.send("put api docs here?");
 });
 
-router.use("/youtube", require("./youtube.router.v2.js"));
+router.use("/youtube", require("./youtube.router.js"));
 
 module.exports = router;

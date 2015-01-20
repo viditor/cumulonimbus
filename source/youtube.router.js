@@ -5,10 +5,16 @@ router["get"]("/", function(request, response)
     response.send("get a list of all youtube videos");
 });
 
-router["get"]("/:ytid.:ext", function(request, response)
+router["get"]("/:ytid.:ext", function(request, response, next)
 {
     var ytid = request.params.ytid;
     var ext = request.params.ext;
+    
+    if(["mp4", "webm", "ogv"].indexOf(ext) == -1)
+    {
+        response.sendStatus(400);
+        response.send("Unsupported Filetype");
+    }
     
     response.send("get a youtube video file");
 });
