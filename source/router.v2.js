@@ -1,6 +1,6 @@
 var router = require("express").Router();
 
-router.get("/", function(request, response)
+router["get"]("/", function(request, response)
 {
     response.send("put api docs here?");
 });
