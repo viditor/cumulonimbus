@@ -1,4 +1,6 @@
 var router = require("express").Router();
+var ytdl = require('ytdl-core');
+var fs = require('fs');
 
 router["get"]("/", function(request, response)
 {
@@ -30,7 +32,10 @@ router["post"]("/:ytid", function(request, response)
 {
     var ytid = request.params.ytid;
     
-    response.send("add a youtube video");
+    ytdl("http://www.youtube.com/watch?v=" + ytid)
+        .pipe(fs.createWriteStream(ytid + ".flv"));
+
+    response.send("Downloading http://www.youtube.com/watch?v=" + ytid + " to the server.");
 });
 
 router["delete"]("/:ytid", function(request, response)
