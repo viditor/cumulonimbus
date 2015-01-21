@@ -13,7 +13,12 @@ node_js:
   - "0.11"
   - "0.10"
 # - "0.8"
-# - "0.6" 
+# - "0.6"
+
+# http://docs.travis-ci.com/user/database-setup/
+# Most services are not started on boot to make more RAM available to project test suites.
+services:
+  - mongodb
 
 ## Use this to prepare the system to install prerequisites or dependencies 
 # before_install:
