@@ -7,6 +7,8 @@ var app = express()
 app.get("/greet", sendGreeting)
 app.get("/sqrt", sendSqrt)
 
+app.use("/v2", require("./source/router.js"))
+
 var port = process.env.PORT || 8080;
 
 app["all"]("*", function(request, response)
@@ -22,3 +24,10 @@ var server = app.listen(port, function()
 
     console.log("Example app listening at http://%s:%s", host, port)
 })
+
+/*mongoose = require("mongoose");
+mongoose.connect("mongodb://localhost/cumulonimbus");
+mongoose.connection.on("open", function()
+{
+    console.log("Cumulonimbus is connected to MongoDB");
+});*/
