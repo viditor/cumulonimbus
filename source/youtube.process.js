@@ -1,20 +1,40 @@
 var q = require("q");
 var fs = require("fs");
 var ytdl = require("ytdl-core");
-var db = require("mongojs").connect("mongodb://localhost", ["assets"]);
 
 module.exports =
 {
     download: function(ytid)
     {
-        ytdl("http://www.youtube.com/watch?v=" + ytid)
-            .pipe(fs.createWriteStream(ytid + ".flv"));
+        var deferred = q.defer();
+        
+        var filename = ytid + ".flv";
+        var yturl = "http://www.youtube.com/watch?v=" + ytid;
 
-        db.assets.save
-        ({
-            "ytid": ytid,
-            "downloadTime": Date.now()
+        var process = ytdl(yturl);
+        
+        /*process.on("data", function(data)
+        {
+            console.log(data);
+        });*/
+        
+        /*process.on("info", function(info)
+        {
+            console.log(info);
+        });*/
+        
+        process.on("error", function(error)
+        {
+            deferred.reject(error);
         });
+        
+        process.on("end", function()
+        {
+            deferred.resolve(filename);
+        });
+        
+        process.pipe(fs.createWriteStream(filename));
+        
+        return deferred.promise;
     }
 }
-

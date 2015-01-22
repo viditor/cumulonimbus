@@ -1,6 +1,9 @@
 var fs = require("fs");
 var path = require("path");
 var youtube = require("./youtube.process");
+var mongo = require("mongojs");
+
+var db = mongo.connect("mongodb://localhost", ["assets"]);
 
 var router = require("express").Router();
 
@@ -26,9 +29,14 @@ router["get"]("/:ytid.:ext", function(request, response, next)
 router["get"]("/:ytid", function(request, response)
 {
     var ytid = request.params.ytid;
-    var file = ytid + ".flv";
-
-    fs.exists(file, function(exists)
+    
+    db.assets.findOne(function(error, asset)
+    {
+        if(error || !asset)
+        {
+            response.send()
+        }
+    })
     {
         if(exists)
         {
@@ -45,7 +53,14 @@ router["post"]("/:ytid", function(request, response)
 {
     var ytid = request.params.ytid;
 
-    youtube.download(ytid);
+    youtube.download(ytid).then(function()
+    {
+        db.assets.save
+        ({
+            ytid: ytid,
+            time: Date.now()
+        });
+    })
 
     response.send("Downloading http://www.youtube.com/watch?v=" + ytid + " to the server.");
 });
