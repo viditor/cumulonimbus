@@ -28,25 +28,19 @@ router["get"]("/:ytid.:ext", function(request, response, next)
 
 router["get"]("/:ytid", function(request, response)
 {
-    var ytid = request.params.ytid;
-    
-    db.assets.findOne(function(error, asset)
+    var _ytid = request.params.ytid;
+
+    db.assets.findOne({ytid: _ytid}, function(error, asset)
     {
         if(error || !asset)
         {
-            response.send()
-        }
-    })
-    {
-        if(exists)
-        {
-            response.sendFile(path.join(__dirname, "../", file));
+            response.send("Video with ytid " + _ytid + " is not on the server.");
         }
         else
         {
-            response.send("Video with ytid " + ytid + " is not on the server.");
+            response.send(asset);
         }
-    });
+    })
 });
 
 router["post"]("/:ytid", function(request, response)
