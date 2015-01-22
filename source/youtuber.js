@@ -1,18 +1,25 @@
+var q = require("q");
+var fs = require("fs");
+var ytdl = require("ytdl-core");
+
 function youtube(ytid)
 {
     var deferred = q.defer();
     
-    var process = ytdl("http://www.youtube.com/watch?v=" + ytid);
+    var file = ytid + ".flv";
+    var yturl = "http://www.youtube.com/watch?v=" + ytid;
+
+    var process = ytdl(yturl);
     
     /*process.on("data", function(data)
     {
         console.log(data);
     });*/
     
-    process.on("info", function(info)
+    /*process.on("info", function(info)
     {
         console.log(info);
-    });
+    });*/
     
     process.on("error", function(error)
     {
@@ -21,15 +28,10 @@ function youtube(ytid)
     
     process.on("end", function()
     {
-        deferred.resolve(asset);
+        deferred.resolve(file);
     });
     
-    process.pipe(fs.createWriteStream("assets" + "/" + ytid + ".flv"));
+    process.pipe(fs.createWriteStream(file));
     
     return deferred.promise;
 }
-
-youtube().then(function()
-{
-    console.log("!")
-})
