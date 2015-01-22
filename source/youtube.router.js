@@ -1,7 +1,8 @@
-var router = require("express").Router();
-var fs = require('fs');
+var fs = require("fs");
 var path = require("path");
-var youtubeDownloader = require("./youtube.downloader");
+var youtube = require("./youtube.process");
+
+var router = require("express").Router();
 
 router["get"]("/", function(request, response)
 {
@@ -25,13 +26,13 @@ router["get"]("/:ytid.:ext", function(request, response, next)
 router["get"]("/:ytid", function(request, response)
 {
     var ytid = request.params.ytid;
-    var fileName = ytid + ".flv";
+    var file = ytid + ".flv";
 
-    fs.exists(fileName, function(exists)
+    fs.exists(file, function(exists)
     {
-        if (exists)
+        if(exists)
         {
-            response.sendFile(path.join(__dirname, "../", fileName));
+            response.sendFile(path.join(__dirname, "../", file));
         }
         else
         {
@@ -44,7 +45,7 @@ router["post"]("/:ytid", function(request, response)
 {
     var ytid = request.params.ytid;
 
-    youtubeDownloader.download(ytid);
+    youtube.download(ytid);
 
     response.send("Downloading http://www.youtube.com/watch?v=" + ytid + " to the server.");
 });

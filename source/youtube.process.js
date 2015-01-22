@@ -1,6 +1,7 @@
-var ytdl = require('ytdl-core');
-var fs = require('fs');
-var db = require("mongojs").connect("mongodb://localhost", ['assets']);
+var q = require("q");
+var fs = require("fs");
+var ytdl = require("ytdl-core");
+var db = require("mongojs").connect("mongodb://localhost", ["assets"]);
 
 module.exports =
 {
@@ -16,3 +17,4 @@ module.exports =
         });
     }
 }
+
