@@ -2,7 +2,7 @@ var frisby = require("frisby");
 
 var port = process.env.PORT || 8080;
 
-var serverAddress = "http://localhost:" + port;
+var serverAddress = "http://127.0.0.1:" + port;
 
 frisby.create("Get greeting")
     .get(serverAddress + "/greet")
