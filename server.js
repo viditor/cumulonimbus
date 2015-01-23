@@ -3,7 +3,7 @@ var express = require("express");
 var app = express();
 
 app.use("/v2", require("./source/router.js"));
-app.use("/greet", require("./greet.router.js"));
+app.use("/greet", require("./source/greet.router.js"));
 
 app["all"]("*", function(request, response)
 {
