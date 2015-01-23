@@ -38,7 +38,6 @@ install:
 ## e.g. copy database configurations, environment variables, etc.
 ## http://stackoverflow.com/questions/12336566/travis-ci-with-jasmine-node
 before_script:
-#  - "npm start"
   - "node server"
 
 
@@ -47,9 +46,6 @@ before_script:
 ## You can specify the main build command to run
 ## instead of the default e.g. script: "./run-tests.sh"
 # script:
-
-after_script:
-  - "npm stop"
 
 # after_success:
 #  - ""
