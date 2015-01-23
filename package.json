@@ -26,10 +26,10 @@
     "node": ">=0.10.3"
   },
   "dependencies": {
+    "bluebird": "^2.8.2",
     "express": "~4.10.6",
     "mongojs": "^0.18.1",
     "mongoose": "^3.8.21",
-    "q": "^1.1.2",
     "ytdl-core": "^0.3.1"
   },
   "devDependencies": {
