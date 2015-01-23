@@ -38,7 +38,8 @@ install:
 ## e.g. copy database configurations, environment variables, etc.
 ## http://stackoverflow.com/questions/12336566/travis-ci-with-jasmine-node
 before_script:
-  - "npm start"
+#  - "npm start"
+  - "node server"
 
 
 ## Default is specific to project language
