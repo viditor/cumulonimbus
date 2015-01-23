@@ -2,13 +2,20 @@ var fs = require("fs");
 var ytdl = require("ytdl-core");
 var Bluebird = require("bluebird");
 
+var ASSETS_DIRECTORY = __dirname + "/../assets/";
+
 module.exports =
 {
     download: function(ytid)
     {
         return new Bluebird(function(resolve, reject)
         {
-            var filename = ytid + ".flv";
+            if(!fs.existsSync(ASSETS_DIRECTORY))
+            {
+                fs.mkdir(ASSETS_DIRECTORY);
+            }
+
+            var file = ASSETS_DIRECTORY + ytid + ".flv";
             var yturl = "http://www.youtube.com/watch?v=" + ytid;
 
             var process = ytdl(yturl);
@@ -30,10 +37,16 @@ module.exports =
             
             process.on("end", function()
             {
-                resolve(filename);
+                resolve(file);
             });
             
-            process.pipe(fs.createWriteStream(filename));
+            process.pipe(fs.createWriteStream(file));
         });
     }
 }
+
+console.log(Date.now(), "Beginning Youtube Download");
+module.exports.download("FD_SbJCQovU").then(function()
+{
+    console.log(Date.now(), "Finishing Youtube Download");
+})
