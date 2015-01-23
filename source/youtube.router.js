@@ -47,8 +47,10 @@ router["post"]("/:ytid", function(request, response)
 {
     var ytid = request.params.ytid;
 
+    console.log(Date.now(), "Beginning Youtube Download");
     youtube.download(ytid).then(function()
     {
+        console.log(Date.now(), "Finishing Youtube Download");
         db.assets.save
         ({
             ytid: ytid,
