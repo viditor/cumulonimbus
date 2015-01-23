@@ -3,7 +3,7 @@ var path = require("path");
 var youtube = require("./youtube.process");
 var mongo = require("mongojs");
 
-//var db = mongo.connect("mongodb://localhost", ["assets"]);
+var db = mongo.connect("mongodb://localhost", ["assets"]);
 
 var router = require("express").Router();
 
@@ -30,7 +30,7 @@ router["get"]("/:ytid", function(request, response)
 {
     var _ytid = request.params.ytid;
 
-    /*db.assets.findOne({ytid: _ytid}, function(error, asset)
+    db.assets.findOne({ytid: _ytid}, function(error, asset)
     {
         if(error || !asset)
         {
@@ -40,7 +40,7 @@ router["get"]("/:ytid", function(request, response)
         {
             response.send(asset);
         }
-    })*/
+    })
 });
 
 router["post"]("/:ytid", function(request, response)
@@ -51,11 +51,11 @@ router["post"]("/:ytid", function(request, response)
     youtube.download(ytid).then(function()
     {
         console.log(Date.now(), "Finishing Youtube Download");
-        /*db.assets.save
+        db.assets.save
         ({
             ytid: ytid,
             time: Date.now()
-        });*/
+        });
     })
 
     response.send("Downloading http://www.youtube.com/watch?v=" + ytid + " to the server.");
