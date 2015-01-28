@@ -1,7 +1,11 @@
-var router = require("express").Router();
-var fs = require('fs');
+var fs = require("fs");
 var path = require("path");
-var youtubeDownloader = require("./youtube.downloader");
+var youtube = require("./youtube.process");
+var mongo = require("mongojs");
+
+var db = mongo.connect("mongodb://localhost", ["assets"]);
+
+var router = require("express").Router();
 
 router["get"]("/", function(request, response)
 {
@@ -24,27 +28,35 @@ router["get"]("/:ytid.:ext", function(request, response, next)
 
 router["get"]("/:ytid", function(request, response)
 {
-    var ytid = request.params.ytid;
-    var fileName = ytid + ".flv";
+    var _ytid = request.params.ytid;
 
-    fs.exists(fileName, function(exists)
+    db.assets.findOne({ytid: _ytid}, function(error, asset)
     {
-        if (exists)
+        if(error || !asset)
         {
-            response.sendFile(path.join(__dirname, "../", fileName));
+            response.send("Video with ytid " + _ytid + " is not on the server.");
         }
         else
         {
-            response.send("Video with ytid " + ytid + " is not on the server.");
+            response.send(asset);
         }
-    });
+    })
 });
 
 router["post"]("/:ytid", function(request, response)
 {
     var ytid = request.params.ytid;
 
-    youtubeDownloader.download(ytid);
+    console.log(Date.now(), "Beginning Youtube Download");
+    youtube.download(ytid).then(function()
+    {
+        console.log(Date.now(), "Finishing Youtube Download");
+        db.assets.save
+        ({
+            ytid: ytid,
+            time: Date.now()
+        });
+    })
 
     response.send("Downloading http://www.youtube.com/watch?v=" + ytid + " to the server.");
 });
