@@ -2,6 +2,8 @@ var express = require("express")
 var sendGreeting = require("./source/greeter").sendGreeting
 var sendSqrt = require("./source/square-rooter").sendSqrt
 
+require("./source/mongoose.schemas").loadSchemas();
+
 var app = express()
 
 app.get("/greet", sendGreeting)
