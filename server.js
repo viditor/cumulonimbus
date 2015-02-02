@@ -2,6 +2,7 @@ var express = require("express");
 
 require("./source/mongoose.schemas").loadSchemas();
 
+var app = express();
 
 app.use("/v2", require("./source/router.js"));
 app.use("/greet", require("./source/greet.router.js"));
