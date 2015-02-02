@@ -44,9 +44,3 @@ module.exports =
         });
     }
 }
-
-console.log(Date.now(), "Beginning Youtube Download");
-module.exports.download("FD_SbJCQovU").then(function()
-{
-    console.log(Date.now(), "Finishing Youtube Download");
-})
