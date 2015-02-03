@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+
 var Schema = mongoose.Schema;
 
 module.exports =
@@ -7,8 +8,10 @@ module.exports =
     {
         var assetSchema = new Schema
         ({
+            ytid: String,
             files:
             {
+                original: String,
                 mp4: String,
                 webm: String, 
                 ogv: String
@@ -19,6 +22,15 @@ module.exports =
                 touched: Number
             }
         });
+
+        assetSchema.methods.create = function (ytid, originalFile)
+        {
+            var fluffy = new Kitten({ name: 'fluffy' });
+            var greeting = this.name
+            ? "Meow name is " + this.name
+            : "I don't have a name"
+            console.log(greeting);
+        }
         mongoose.model("Asset", assetSchema);
     }
 }
