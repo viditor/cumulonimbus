@@ -1,10 +1,7 @@
 var fs = require("fs");
 var path = require("path");
 var youtube = require("./youtube.process");
-var mongojs = require("mongojs");
 var mongoose = require("mongoose");
-
-var db = mongojs.connect("mongodb://localhost", ["assets"]);
 
 var router = require("express").Router();
 
@@ -31,14 +28,24 @@ router["get"]("/:ytid", function(request, response)
 {
     var _ytid = request.params.ytid;
 
-    db.assets.findOne({ytid: _ytid}, function(error, asset)
+    mongoose.model("Asset").findOne({ytid: _ytid}, function(findError, asset)
     {
-        if(error || !asset)
+
+        if(findError || !asset)
         {
             response.send("Video with ytid " + _ytid + " is not on the server.");
         }
         else
         {
+            asset.dates.touched = Date.now();
+            asset.save(function(updateError)
+            {
+                if(updateError)
+                {
+                    console.error("Could not update touch time on asset with ytid of " + _ytid);
+                }
+            });
+
             response.send(asset);
         }
     })
