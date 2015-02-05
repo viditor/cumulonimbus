@@ -37,8 +37,8 @@ install:
 ## Use this to prepare your build for testing
 ## e.g. copy database configurations, environment variables, etc.
 ## http://stackoverflow.com/questions/12336566/travis-ci-with-jasmine-node
-#before_script:
-#  - "npm start"
+before_script:
+  - "npm start"
 
 
 ## Default is specific to project language
