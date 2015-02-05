@@ -23,14 +23,24 @@ module.exports =
             }
         });
 
-        assetSchema.methods.create = function (ytid, originalFile)
+        assetSchema.methods.touch = function (_ytid, callback)
         {
-            var fluffy = new Kitten({ name: 'fluffy' });
-            var greeting = this.name
-            ? "Meow name is " + this.name
-            : "I don't have a name"
-            console.log(greeting);
+            var query =
+            {
+                ytid: _ytid
+            };
+
+            var update =
+            {
+                dates:
+                {
+                    touched: Date.now()
+                }
+            };
+
+            this.model('Asset').findOneAndUpdate(query, update, {}, callback);
         }
+
         mongoose.model("Asset", assetSchema);
     }
 }
