@@ -29,7 +29,7 @@ services:
 install:
   - "npm install"                              # may be default???
   - "npm install -g jasmine-node"
-#  - "npm install forever -g"
+  - "npm install forever -g"
 
   # env:
 # - ""
