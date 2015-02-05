@@ -1,9 +1,10 @@
 var fs = require("fs");
 var path = require("path");
 var youtube = require("./youtube.process");
-var mongo = require("mongojs");
+var mongojs = require("mongojs");
+var mongoose = require("mongoose");
 
-var db = mongo.connect("mongodb://localhost", ["assets"]);
+var db = mongojs.connect("mongodb://localhost", ["assets"]);
 
 var router = require("express").Router();
 
@@ -45,25 +46,37 @@ router["get"]("/:ytid", function(request, response)
 
 router["post"]("/:ytid", function(request, response)
 {
-    var ytid = request.params.ytid;
+    var _ytid = request.params.ytid;
 
     console.log(Date.now(), "Beginning Youtube Download");
-    youtube.download(ytid).then(function()
+    youtube.download(_ytid).then(function()
     {
         console.log(Date.now(), "Finishing Youtube Download");
-        db.assets.save
+
+        mongoose.model("Asset").create
         ({
-            ytid: ytid,
-            time: Date.now()
+            ytid: _ytid,
+            files:
+            {
+                original: "",
+                mp4: "",
+                webm: "", 
+                ogv: ""
+            },
+            dates:
+            {
+                created: Date.now(),
+                touched: Date.now()
+            }
         });
     })
 
-    response.send("Downloading http://www.youtube.com/watch?v=" + ytid + " to the server.");
+    response.send("Downloading http://www.youtube.com/watch?v=" + _ytid + " to the server.");
 });
 
 router["delete"]("/:ytid", function(request, response)
 {
-    var ytid = request.params.ytid;
+    var _ytid = request.params.ytid;
     
     response.send("add a youtube video");
 });
