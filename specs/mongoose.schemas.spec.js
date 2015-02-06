@@ -30,16 +30,16 @@ describe("Asset schema", function()
         
         promiseA.then(function(errorA, assetA)
         {
-            expect(errorA).toBeNull();
-            expect(assetA).not.toBeNull();
+            expect(errorA).toBeUndefined();
+            expect(assetA).toBeDefined();
 
             assetA.touch(function()
             {
                 var promiseB = mongoose.model("Asset").findOne({ytid: "TEST"}).exec();
                 promiseB.then(function(errorB, assetB)
                 {
-                    expect(errorB).toBeNull();
-                    expect(assetB).not.toBeNull();
+                    expect(errorB).toBeUndefined();
+                    expect(assetB).toBeDefined();
                     expect(assetB.dates.touched).not.toEqual(0);
 
                     done();
