@@ -7,7 +7,6 @@ describe("Asset schema", function()
 {
     it("allows creation of new assets", function(done)
     {
-
         // Create dummy asset
         mongoose.model("Asset").create
         ({
@@ -27,18 +26,21 @@ describe("Asset schema", function()
 
     it("updates the 'touched' date of the asset", function(done)
     {
-        mongoose.model("Asset").findOne({ytid: "TEST"}, function(error, asset)
+        var promiseA = mongoose.model("Asset").findOne({ytid: "TEST"}).exec();
+        
+        promiseA.then(function(errorA, assetA)
         {
-            expect(error).toBeNull();
-            expect(asset).not.toBeNull();
+            expect(errorA).toBeNull();
+            expect(assetA).not.toBeNull();
 
-            asset.touch(function()
+            assetA.touch(function()
             {
-                mongoose.model("Asset").findOne({ytid: "TEST"}, function(error, asset)
+                var promiseB = mongoose.model("Asset").findOne({ytid: "TEST"}).exec();
+                promiseB.then(function(errorB, assetB)
                 {
-                    expect(error).toBeNull();
-                    expect(asset).not.toBeNull();
-                    expect(asset.dates.touched).not.toEqual(0);
+                    expect(errorB).toBeNull();
+                    expect(assetB).not.toBeNull();
+                    expect(assetB.dates.touched).not.toEqual(0);
 
                     done();
                 });
