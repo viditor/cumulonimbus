@@ -19,8 +19,7 @@ router["get"]("/:ytid.:ext", function(request, response, next)
     
     if(["mp4", "webm", "ogv"].indexOf(ext) == -1)
     {
-        response.sendStatus(400);
-        response.send("Unsupported Filetype");
+        response.status(400).send("Unsupported Filetype");
     }
     
     response.send("get a youtube video file");

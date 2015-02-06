@@ -7,8 +7,7 @@ app.use("/greet", require("./source/greet.router.js"));
 
 app["all"]("*", function(request, response)
 {
-    response.sendStatus(404);
-    response.send("put error message here");
+    response.status(404).send("put error message here");
 });
 
 var port = process.env.PORT || 8080;
