@@ -19,22 +19,16 @@ var assetSchema = new Schema
     }
 });
 
-assetSchema.methods.touch = function (_ytid, callback)
+assetSchema.methods.touch = function()
 {
-    var query =
+    this.dates.touched = Date.now();
+    this.save(function(error)
     {
-        ytid: _ytid
-    };
-
-    var update =
-    {
-        dates:
+        if(error)
         {
-            touched: Date.now()
+            console.error("Could not update touch time on asset " + this.id);
         }
-    };
-
-    this.model("Asset").findOneAndUpdate(query, update, {}, callback);
+    });
 }
 
 mongoose.model("Asset", assetSchema);

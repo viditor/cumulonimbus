@@ -20,8 +20,11 @@ router["get"]("/:ytid.:ext", function(request, response, next)
         response.sendStatus(400);
         response.send("Unsupported Filetype");
     }
-    
-    response.send("get a youtube video file");
+    else
+    {
+        response.send("get a youtube video file");
+        //asset.touch();
+    }
 });
 
 router["get"]("/:ytid", function(request, response)
@@ -37,15 +40,7 @@ router["get"]("/:ytid", function(request, response)
         }
         else
         {
-            asset.dates.touched = Date.now();
-            asset.save(function(updateError)
-            {
-                if(updateError)
-                {
-                    console.error("Could not update touch time on asset with ytid of " + _ytid);
-                }
-            });
-
+            asset.touch();
             response.send(asset);
         }
     })
