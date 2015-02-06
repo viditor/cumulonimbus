@@ -19,16 +19,22 @@ var assetSchema = new Schema
     }
 });
 
-assetSchema.methods.touch = function()
+assetSchema.methods.touch = function(callback)
 {
-    this.dates.touched = Date.now();
-    this.save(function(error)
+    // Set a default callback if none unspecified
+    if (typeof callback === "undefined")
     {
-        if(error)
+        callback = function(error)
         {
-            console.error("Could not update touch time on asset " + this.id);
-        }
-    });
+            if(error)
+            {
+                console.error("Could not update touch time on asset " + this.id);
+            }
+        };
+    }
+
+    this.dates.touched = Date.now();
+    this.save(callback);
 }
 
 mongoose.model("Asset", assetSchema);
