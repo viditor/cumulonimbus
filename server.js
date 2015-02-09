@@ -1,4 +1,8 @@
 var express = require("express");
+var mongoose = require("mongoose");
+
+require("./source/mongoose.connection");
+require("./source/mongoose.schemas");
 
 var app = express();
 
@@ -18,10 +22,3 @@ var server = app.listen(port, function()
 
     console.log("Example app listening at http://%s:%s", host, port)
 })
-
-/*mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost/cumulonimbus");
-mongoose.connection.on("open", function()
-{
-    console.log("Cumulonimbus is connected to MongoDB");
-});*/
