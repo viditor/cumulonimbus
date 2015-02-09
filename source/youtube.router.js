@@ -7,7 +7,17 @@ var router = require("express").Router();
 
 router["get"]("/", function(request, response)
 {
-    response.send("get a list of all youtube videos");
+    mongoose.model("Asset").find(function(error, data)
+    {
+        if(error || !data)
+        {
+            response.status(404).send("Could not get list of assets.");
+        }
+        else
+        {
+            response.send(data);
+        }
+    })
 });
 
 router["get"]("/:ytid.:ext", function(request, response, next)
