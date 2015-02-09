@@ -11,7 +11,7 @@ router["get"]("/", function(request, response)
     {
         if(error || !data)
         {
-            response.status(404).send("Could");
+            response.status(404).send("Could not get list of assets.");
         }
         else
         {
