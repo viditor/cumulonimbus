@@ -61,11 +61,6 @@ module.exports.transcode = function(directory, file_handle,
             reject(error);
         });
         
-         * transcoding.on("progress", function(progress)
-         * {
-         *     console.log(output, progress.frames);
-         * });
-        
         transcoding.on("end", function()
         {
             resolve(output_file);
