@@ -1,4 +1,3 @@
-
 var Bluebird = require("bluebird");
 var ffmpeg = require("fluent-ffmpeg");
 

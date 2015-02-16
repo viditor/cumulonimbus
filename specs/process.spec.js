@@ -1,14 +1,33 @@
 var Bluebird = require("bluebird");
-var fs = Bluebird.promisifyAll(require("fs"));
-var ffmpeg = require("../source/ffmpeg.process.js");
 
-describe("FFMPEG Process", function()
+var path = require("path");
+var fs = Bluebird.promisifyAll(require("fs"));
+
+var ffmpeg = require("../source/ffmpeg.process.js");
+var youtube = require("../source/youtube.process.js");
+
+describe("youtube.process.js", function()
+{
+    it("can run multiple tests", function(done)
+    {
+        youtube.download("UiyDmqO59QE").then(function(file)
+        {
+            expect(file).toEqual(path.join(__dirname, "../assets/UiyDmqO59QE.flv"));
+        })
+        .finally(function()
+        {
+            done();
+        });
+    });
+});
+
+describe("ffmpeg.process.js", function()
 {
     it("can transcode videos to other formats", function(done)
     {
-        ffmpeg.transcode("./assets", "kfchvCyHmsc", "flv", "mp4").then(function(asset)
+        ffmpeg.transcode("./assets", "UiyDmqO59QE", "flv", "mp4").then(function(asset)
         {
-            expect(asset).toBe("./assets/kfchvCyHmsc.mp4");
+            expect(asset).toBe("./assets/UiyDmqO59QE.mp4");
             return asset;
         })
         .then(function(asset)
@@ -23,16 +42,16 @@ describe("FFMPEG Process", function()
         {
             done();
         });
-    });
+    }, 5000);
     
     it("can transcode videos to web compatible formats", function(done)
     {
-        ffmpeg.webtranscode("./assets", "kfchvCyHmsc").then(function(assets)
+        ffmpeg.webtranscode("./assets", "UiyDmqO59QE").then(function(assets)
         {
             expect(assets).toEqual([
-                "./assets/kfchvCyHmsc.mp4",
-                "./assets/kfchvCyHmsc.webm",
-                "./assets/kfchvCyHmsc.ogv"
+                "./assets/UiyDmqO59QE.mp4",
+                "./assets/UiyDmqO59QE.webm",
+                "./assets/UiyDmqO59QE.ogv"
             ]);
             return assets;
         })
@@ -48,5 +67,5 @@ describe("FFMPEG Process", function()
         {
             done();
         });
-    });
+    }, 25000);
 });
