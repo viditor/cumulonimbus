@@ -112,5 +112,11 @@ module.exports.webtranscode = function(directory, file_handle)
         module.exports.transcode(directory, file_handle, "flv", "ogv", "libtheora", "libvorbis")
     ];
     
-    return Bluebird.settle(transcodings)
+    return Bluebird.settle(transcodings).then(function(assets)
+    {
+        return assets.map(function(asset)
+        {
+            return asset._settledValue;
+        });
+    });
 }
