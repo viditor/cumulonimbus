@@ -42,7 +42,7 @@ describe("ffmpeg.process.js", function()
         {
             done();
         });
-    }, 5000);
+    }, 10000);
     
     it("can transcode videos to web compatible formats", function(done)
     {
@@ -67,5 +67,5 @@ describe("ffmpeg.process.js", function()
         {
             done();
         });
-    }, 25000);
+    }, 50000);
 });
