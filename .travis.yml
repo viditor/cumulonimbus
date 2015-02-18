@@ -21,7 +21,7 @@ services:
 #  - mongodb
 
 ## Use this to prepare the system to install prerequisites or dependencies 
-# before_install:
+before_install:
 # https://github.com/travis-ci/travis-ci/issues/281
  - "sudo aptitude -y -q install ffmpeg"
 
