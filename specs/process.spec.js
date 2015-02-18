@@ -8,7 +8,7 @@ var youtube = require("../source/youtube.process.js");
 
 describe("youtube.process.js", function()
 {
-    it("can run multiple tests", function(done)
+    it("can download videos from youtube", function(done)
     {
         youtube.download("UiyDmqO59QE").then(function(file)
         {
