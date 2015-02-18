@@ -23,7 +23,7 @@ services:
 ## Use this to prepare the system to install prerequisites or dependencies 
 before_install:
 # https://github.com/travis-ci/travis-ci/issues/281
- - "sudo aptitude -y -q install ffmpeg"
+ - "sudo apt-get install ffmpeg"
 
 ## Use this to install any prerequisites
 ## or dependencies necessary to run your build
