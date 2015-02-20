@@ -18,11 +18,12 @@ node_js:
 # http://docs.travis-ci.com/user/database-setup/
 # Most services are not started on boot to make more RAM available to project test suites.
 services:
-  - mongodb
+#  - mongodb
 
 ## Use this to prepare the system to install prerequisites or dependencies 
-# before_install:
-# - ""
+before_install:
+# https://github.com/travis-ci/travis-ci/issues/281
+ - "sudo apt-get install ffmpeg"
 
 ## Use this to install any prerequisites
 ## or dependencies necessary to run your build
