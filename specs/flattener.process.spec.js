@@ -5,62 +5,41 @@ describe("flattener.process.js", function()
     it("\n" +
         "AAAA\n" +
         "----\n" +
-        "AAAA", function(done)
+        "AAAA", function()
     {
         var input =  [createTestClip("AAAA", 0)];
         var output = [createTestClip("AAAA", 0)];
 
-        flattener.flatten(input).then(function(result)
-        {
-            expect(result).toEqual(output);
-        })
-        .finally(function()
-        {
-            done();
-        });
+        expect(flattener.flatten(input)).toEqual(output);
     });
 
     it ("\n" + 
         "AAAABBBB\n" +
         "--------\n" +
-        "AAAABBBB", function(done)
+        "AAAABBBB", function()
     {
         var input =  [createTestClip("AAAA", 0), createTestClip("    BBBB", 0)];
         var output = [createTestClip("AAAA", 0), createTestClip("    BBBB", 0)];
 
-        flattener.flatten(input).then(function(result)
-        {
-            expect(result).toEqual(output);
-        })
-        .finally(function()
-        {
-            done();
-        });
+        expect(flattener.flatten(input)).toEqual(output);
     });
 
     it ("\n" +
         "AAAA    \n" +
         "    BBBB\n" +
         "--------\n" +
-        "AAAABBBB", function(done)
+        "AAAABBBB", function()
     {
         var input =  [createTestClip("AAAA", 0), createTestClip("    BBBB", 1)];
         var output = [createTestClip("AAAA", 0), createTestClip("    BBBB", 0)];
 
-        flattener.flatten(input).then(function(result)
-        {
-            expect(result).toEqual(output);
-        })
-        .finally(function()
-        {
-            done();
-        });
+        expect(flattener.flatten(input)).toEqual(output);
     });
 
     it ("\n" +
         "AAAA    BBBB\n" +
         "------------\n" +
-        "AAAA0000BBBB", function(done)
+        "AAAA0000BBBB", function()
     {
         var input =
         [
@@ -74,14 +53,7 @@ describe("flattener.process.js", function()
             createTestClip("        BBBB", 0)
         ];
 
-        flattener.flatten(input).then(function(result)
-        {
-            expect(result).toEqual(output);
-        })
-        .finally(function()
-        {
-            done();
-        });
+        expect(flattener.flatten(input)).toEqual(output);
     });
 });
 
@@ -92,7 +64,7 @@ function createTestClip(code, track)
     var name = code.replace(/^\s+/, "");
     var leftSpaceLength = code.length - name.length;
 
-    return {
+    var testClip = {
         "_id": "test-clip-" + name,
         "asset_id": "test-asset-" + name,
         "project_id": "test-project",
@@ -105,4 +77,12 @@ function createTestClip(code, track)
         "tick": leftSpaceLength * 1000,
         "track": track
     };
+
+    if (name.indexOf("0") > -1)
+    {
+        testClip._id = "blackness-placeholder";
+        testClip.asset_id = "blackness-placeholder";
+    }
+
+    return testClip;
 }
