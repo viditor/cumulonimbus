@@ -11,11 +11,13 @@ var Bluebird = require("bluebird");
  * - A promise that will resolve when the flattened array of clips has been completed, and will return  the flattened array.
  * 
  */
-
 module.exports.flatten = function(JSON ticSortedClips)
 {
     return new Bluebird(function(resolve, reject)
-    {        
+    {
+        // (Placeholder)
+        resolve(ticSortedClips);
+
         // transcoding.on("error", function(error)
         // {
         //     reject(error);
@@ -26,5 +28,6 @@ module.exports.flatten = function(JSON ticSortedClips)
         //     resolve(output_file);
         // });
 
+        // process.pipe(fs.createWriteStream(file));
     })
 }
