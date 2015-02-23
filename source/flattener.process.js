@@ -19,13 +19,15 @@ module.exports.flatten = function(tickSortedClips)
         // For now, naively put all clips on track 0
         clip.track = 0;
 
+        // If there is space between the beginning of this clip and the end of last clip
         if (clip.tick > previousEndTick)
         {
-            // Insert blackness where there is a gap between clips
+            // Insert blackness for the duration of the space between clips
             var blacknessLength = clip.tick - previousEndTick;
             tickSortedClips.splice(i, 0, createBlackness(previousEndTick, blacknessLength, clip.project_id));
             i++;
         }
+
         previousEndTick = clip.tick + clip.length;
     }
 
