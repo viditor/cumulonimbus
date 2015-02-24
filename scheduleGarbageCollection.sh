@@ -1,9 +1,7 @@
 #!/usr/bin/env sh
 
 ###########################################################################
-# script name: scheduleGarbageCollection.sh                               #
 # Fri Feb 13 00:53:30 2015 | 1423806810                                   #
-# jtangele@gmail.com                                                      #
 #                                                                         #
 # schedules time to run garbage collection on a daily basis               #
 #                                                                         #
