@@ -26,28 +26,25 @@ var message = 'garbageCollection has run';
 notifier.notify(title,message);
 
 mongoose.model("Asset").find(function(error, data)
+{
+    if (error || !data)
     {
-        if(error || !data)
+        console.log("Could not get list of assets.");
+    }
+    else
+    {
+        for (var index in data)
         {
-            console.log("Could not get list of assets.");
-        }
-        else
-        {
-            for (var index in data)
+            var touchDate = data[index].dates.touched;
+            var items = data[index].files;
+            if (expirationDate > touchDate)
             {
-                var touchDate = data[index].dates.touched;
-                var items = data[index].files;
-                if (expirationDate > touchDate)
-                {
-                    for (var i in items)
-                    {
-                        fs.unlink(ASSETS_DIRECTORY + items.original);
-                        fs.unlink(ASSETS_DIRECTORY + items.ogv);
-                        fs.unlink(ASSETS_DIRECTORY + items.webm);
-                        fs.unlink(ASSETS_DIRECTORY + items.mp4);
-                    }
-                }
+                fs.unlink(ASSETS_DIRECTORY + items.original);
+                fs.unlink(ASSETS_DIRECTORY + items.ogv);
+                fs.unlink(ASSETS_DIRECTORY + items.webm);
+                fs.unlink(ASSETS_DIRECTORY + items.mp4);
             }
-            process.exit(); // this should not be necessary.
         }
-    });
+        process.exit(); // this should not be necessary.
+    }
+});
