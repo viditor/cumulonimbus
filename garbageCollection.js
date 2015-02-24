@@ -6,7 +6,7 @@
 // email section should be moved to a point after code has executed,
 // Ideally it should also report what files have been deleted.
 //
-// use scheduleGarbageCollection.sh to install cron job to run (where available)
+// use scheduleGarbageCollection.sh to install cron job to run script
 
 var fs = require("fs");
 var path = require("path");
@@ -51,8 +51,3 @@ mongoose.model("Asset").find(function(error, data)
             process.exit(); // this should not be necessary.
         }
     });
-
-
-
-
-
