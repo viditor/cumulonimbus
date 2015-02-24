@@ -1,15 +1,11 @@
 #!/usr/bin/env sh
 
-###########################################################################
-# Fri Feb 13 00:53:30 2015 | 1423806810                                   #
-#                                                                         #
-# schedules time to run garbage collection on a daily basis               #
-#                                                                         #
-# TO USE:                                                                 #
-# change directory to the file with scheduleGarbageCollection.sh          # 
-# sh scheduleGarbageCollection.sh                                         #
-#                                                                         #
-###########################################################################
+# Fri Feb 13 00:53:30 2015 | 1423806810
+# schedules time to run garbage collection on a daily basis
+
+# TO USE:
+# change directory to the file with scheduleGarbageCollection.sh
+# sh scheduleGarbageCollection.sh
 
 # USGAGE/HELP MESSAGE
 prog=$(basename $0);
