@@ -40,14 +40,6 @@ done
 FILE="/tmp/crontab.$$";
 NODE=$(which node);
 DIR=$(pwd);
-
-while [ -e $FILE ]
-do
-    PROCNUM=$(echo $FILE | sed ' s/\/tmp\/crontab\.// ' ; );
-    PROCNUM=$(( $PROCNUM + 1 ));
-    FILE="/tmp/crontab.${PROCNUM}"
-done
-
 crontab -l > $FILE
 
 #    min hour mday month wday command  
