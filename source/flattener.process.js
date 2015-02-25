@@ -19,13 +19,20 @@ module.exports.flatten = function(tickSortedClips)
         // For now, naively put all clips on track 0
         clip.track = 0;
 
-        // If there is space between the beginning of this clip and the end of last clip
-        if (clip.tick > previousEndTick)
+        // If there is space between the beginning of this clip and the end of previous clip
+        var timeBetweenPrevious = clip.tick - previousEndTick;
+        if (timeBetweenPrevious > 0)
         {
             // Insert blackness for the duration of the space between clips
-            var blacknessLength = clip.tick - previousEndTick;
-            tickSortedClips.splice(i, 0, createBlackness(previousEndTick, blacknessLength, clip.project_id));
+            tickSortedClips.splice(i, 0, createBlackness(previousEndTick, timeBetweenPrevious, clip.project_id));
             i++;
+        }
+        // If the previous clip overlaps with this clip
+        else if (timeBetweenPrevious < 0)
+        {
+            // TODO
+            var overlapStart = 0;
+            var overlapEnd = 0;
         }
 
         previousEndTick = clip.tick + clip.length;
