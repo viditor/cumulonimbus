@@ -55,6 +55,43 @@ describe("flattener.process.js", function()
 
         expect(flattener.flatten(input)).toEqual(output);
     });
+
+
+    it ("\n" +
+        "AAAA        \n" +
+        "        BBBB\n" +
+        "------------\n" +
+        "AAAA0000BBBB", function()
+    {
+        var input =
+        [
+            createTestClip("AAAA", 0),
+            createTestClip("        BBBB", 1)
+        ];
+        var output = 
+        [
+            createTestClip("AAAA", 0),
+            createTestClip("    0000", 0),
+            createTestClip("        BBBB", 0)
+        ];
+
+        expect(flattener.flatten(input)).toEqual(output);
+    });
+
+    it ("\n" +
+        "    AAAA\n" +
+        "--------\n" +
+        "0000AAAA", function()
+    {
+        var input = [createTestClip("    AAAA", 0)];
+        var output = 
+        [
+            createTestClip("0000", 0),
+            createTestClip("    AAAA", 0),
+        ];
+
+        expect(flattener.flatten(input)).toEqual(output);
+    });
 });
 
 
