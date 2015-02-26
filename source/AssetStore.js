@@ -1,3 +1,4 @@
+var deepmerge = require("deepmerge")
 var Bluebird = require("bluebird")
 
 var AssetStore = function()
@@ -44,38 +45,62 @@ AssetStore.prototype.addAsset = function(asset)
 {
     return new Bluebird(function(resolve, reject)
     {
+        if(asset === undefined)
+        {
+            asset = new Object()
+        }
         if(asset.asset_id === undefined)
         {
             asset.asset_id = 1
         }
-        if(asset.date_created === undefined)
+        if(asset.dates === undefined)
         {
-            asset.date_created = Date.now()
+            asset.dates = new Object()
         }
-        if(asset.date_Touched === undefined)
+        if(asset.dates.created === undefined)
         {
-            asset.date_touched = Date.now()
+            asset.dates.created = Date.now()
+        }
+        if(asset.dates.touched === undefined)
+        {
+            asset.dates.touched = Date.now()
         }
         if(asset.files === undefined)
         {
-            asset.files = {}
+            asset.files = new Object()
         }
 
-        this.assets[asset_id] = asset
-
+        this.assets[asset.asset_id] = asset
         this.trigger("add asset", asset)
-        resolve(asset)
+        resolve(asset.asset_id)
+    }
+    .bind(this))
+}
+
+AssetStore.prototype.updateAsset = function(asset_id, reasset)
+{
+    return new Bluebird(function(resolve, reject)
+    {
+        var asset = this.assets[asset_id]
+
+        this.assets[asset_id] = deepmerge(asset, reasset)
+        this.trigger("update asset", this.assets[asset_id])
+        resolve(asset_id)
     }
     .bind(this))
 }
 
 AssetStore.prototype.addAssetFile = function(asset_id, file_type, file_path)
 {
-    var asset = this.assets[asset_id]
-    asset.files[file_type] = file_path
+    return new Bluebird(function(resolve, reject)
+    {
+        var asset = this.assets[asset_id]
+        asset.files[file_type] = file_path
 
-    this.trigger("update asset", asset)
-    resolve(asset)
+        this.trigger("update asset", asset)
+        resolve(asset)
+    }
+    .bind(this))
 }
 
 AssetStore.prototype.nukeAssets = function()

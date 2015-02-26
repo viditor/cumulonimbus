@@ -4,7 +4,7 @@ var express = require("express")
 var mongoose = require("mongoose")
 
 var AssetStore = require("./AssetStore.js")
-var Youtube = require("./youtube.process.js")
+var YoutubeUtils = require("./youtube.process.js")
 
 var router = express.Router()
 
@@ -60,22 +60,21 @@ router["post"]("/:ytid", function(request, response)
 {
     var youtube_id = request.params.ytid
 
-    //if(ytid is not valid)
+    //todo: check if youtube_id is valid.
+    //todo: check that the asset doesn't already exist.
 
-    AssetStore.addAsset({youtube_id: youtube_id}).then(function(asset)
+    AssetStore.addAsset().then(function(asset_id)
     {
-        return Youtube.download(youtube_id)
-    })
-    .then(function(asset_file)
-    {
-        return AssetStore.addAssetFile(asset.asset_id, "flv", asset_file)
-    })
-    .then(function(asset)
-    {
-        console.log(asset)
+        YoutubeUtils.download(asset_id, youtube_id).then(function(stuff)
+        {
+            AssetStore.getAsset(asset_id).then(function(asset)
+            {
+                console.log(asset)
+            })
+        })
     })
 
-    response.send("Downloading " + youtube_id)
+    response.status(200).send("Downloading " + youtube_id)
 })
 
 router["delete"]("/:ytid", function(request, response)
