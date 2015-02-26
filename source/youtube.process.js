@@ -2,21 +2,21 @@ var fs = require("fs")
 var path = require("path")
 var ytdl = require("ytdl-core")
 var Bluebird = require("bluebird")
-var AssetStore = require("./AssetStore.js")
+var AssetStore = require("./asset.store.js")
 
 module.exports.download = function(asset_id, youtube_id)
 {
     return new Bluebird(function(resolve, reject)
     {
-
         var ASSETS_DIRECTORY = path.join(__dirname, "/../assets")
-        if(!fs.existsSync(ASSETS_DIRECTORY))
-        {
+        if(!fs.existsSync(ASSETS_DIRECTORY)) {
             fs.mkdir(ASSETS_DIRECTORY)
-        }
+        }        
 
         var file_path = path.join(ASSETS_DIRECTORY, youtube_id + ".flv")
         var youtube_url = "http://www.youtube.com/watch?v=" + youtube_id
+
+        AssetStore.updateAsset(asset_id, {"youtube_id": youtube_id})
 
         var downloading = ytdl(youtube_url, {quality: 5})
         
@@ -40,7 +40,6 @@ module.exports.download = function(asset_id, youtube_id)
             downloading.on("data", function(data)
             {
                 current_amount += data.length
-                console.log(current_amount / total_amount)
                 AssetStore.updateAsset(asset_id, {"progress": current_amount / total_amount})
             })
         })

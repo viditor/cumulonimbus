@@ -1,10 +1,11 @@
 var deepmerge = require("deepmerge")
 var Bluebird = require("bluebird")
 
+var Asset = require("./asset.schema.js")
+
 var AssetStore = function()
 {
-    this.assets = {}
-    this.listeners = {}
+    this.listeners = new Object()
 }
 
 AssetStore.prototype.getAsset = function(asset_id)
@@ -36,7 +37,17 @@ AssetStore.prototype.getAllAssets = function()
 {
     return new Bluebird(function(resolve, reject)
     {
-        resolve(this.assets)
+        Assets.find({}, function(error, assets)
+        {
+            if(error)
+            {
+                reject(error)
+            }
+            else
+            {
+                resolve(assets)
+            }
+        })
     }
     .bind(this))
 }

@@ -3,7 +3,7 @@ var path = require("path")
 var express = require("express")
 var mongoose = require("mongoose")
 
-var AssetStore = require("./AssetStore.js")
+var AssetStore = require("./asset.store.js")
 var YoutubeUtils = require("./youtube.process.js")
 
 var router = express.Router()
@@ -20,20 +20,27 @@ router["get"]("/", function(request, response)
     })
 })
 
-router["get"]("/:ytid.:ext", function(request, response, next)
+router["get"]("/:ytid.:type", function(request, response, next)
 {
-    var ytid = request.params.ytid
-    var ext = request.params.ext
+    var youtube_id = request.params.ytid
+    var file_type = request.params.type
     
-    if(["mp4", "webm", "ogv"].indexOf(ext) == -1)
+    if(["mp4", "webm", "ogv"].indexOf(file_type) == -1)
     {
         response.status(400).send("Unsupported Filetype")
     }
     else
     {
-        AssetStore.getAssetFile(ytid, ext).then(function(asset_file)
+        AssetStore.getAsset({youtube_id: youtube_id}).then(function(asset)
         {
-            response.status(200).send(asset_file)
+            if(asset.files[file_type])
+            {
+                response.status(200).send(asset.files[file_type])
+            }
+            else
+            {
+                response.status(400).send("Nontranscoded Filetype")
+            }
         })
         .catch(function(error)
         {
@@ -65,16 +72,29 @@ router["post"]("/:ytid", function(request, response)
 
     AssetStore.addAsset().then(function(asset_id)
     {
-        YoutubeUtils.download(asset_id, youtube_id).then(function(stuff)
+        response.status(200).send(asset_id)
+        return asset_id
+    })
+    .then(function(asset_id)
+    {
+        return YoutubeUtils.download(asset_id, youtube_id)
+    }
+    .then(function(asset_id)
+    {
+        return asset_id
+        //todo: transcode the asset into other formats.
+    })
+    .then(function(asset_id)
+    {
+        return AssetStore.getAsset(asset_id).then(function(asset)
         {
-            AssetStore.getAsset(asset_id).then(function(asset)
-            {
-                console.log(asset)
-            })
+            console.log(asset)
         })
     })
-
-    response.status(200).send("Downloading " + youtube_id)
+    .catch(function(error)
+    {
+        //todo: nullify the partially download asset.
+    })
 })
 
 router["delete"]("/:ytid", function(request, response)
