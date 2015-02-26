@@ -1,24 +1,35 @@
+var http = require("http");
 var express = require("express");
-var mongoose = require("mongoose");
+var socketio = require("socket.io");
 
-require("./source/mongoose.connection");
-require("./source/mongoose.schemas");
+//require("./source/mongoose.connection");
+//require("./source/mongoose.schemas");
 
-var app = express();
-
-app.use("/v2", require("./source/router.js"));
-app.use("/greet", require("./source/greet.router.js"));
-
-app["all"]("*", function(request, response)
+application = express();
+application.use("/v2", require("./source/router.js"));
+application.use("/greet", require("./source/greet.router.js"));
+application["all"]("*", function(request, response)
 {
     response.status(404).send("put error message here");
 });
 
-var port = process.env.PORT || 8080;
-var server = app.listen(port, function()
-{
-    var host = server.address().address
-    var port = server.address().port
+////////////
+//Serving//
+//////////
 
-    console.log("Example app listening at http://%s:%s", host, port)
-})
+var port = process.env.PORT || 8080;
+var server = http.Server(application);
+server.listen(port, function()
+{
+    console.log("Cumulonimbus is serving at " + port);
+});
+
+//////////////
+//Streaming//
+////////////
+
+var io = socketio(server);
+io.on("connection", function(socket)
+{
+    socket.emit("Establish a connection");
+});
