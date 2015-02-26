@@ -2,7 +2,7 @@ var http = require("http");
 var express = require("express");
 var socketio = require("socket.io");
 
-var AssetStore = require("./AssetStore.js");
+var AssetStore = require("./source/asset.store.js");
 
 /////////////////
 //Initializing//
