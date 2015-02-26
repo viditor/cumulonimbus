@@ -4,7 +4,7 @@ var express = require("express")
 var mongoose = require("mongoose")
 
 var AssetStore = require("./AssetStore.js")
-var youtube = require("./youtube.process.js")
+var Youtube = require("./youtube.process.js")
 
 var router = express.Router()
 
@@ -60,14 +60,19 @@ router["post"]("/:ytid", function(request, response)
 {
     var youtube_id = request.params.ytid
 
-    console.log(Date.now(), "Beginning Youtube Download")
-    youtube.download(youtube_id).then(function(asset_file)
+    //if(ytid is not valid)
+
+    AssetStore.addAsset({youtube_id: youtube_id}).then(function(asset)
     {
-        console.log(asset_file);
-        console.log(Date.now(), "Finishing Youtube Download")
-        //add video to asset store
-        //transcode video, add that to asset store
-        //save all of this in a job store..?
+        return Youtube.download(youtube_id)
+    })
+    .then(function(asset_file)
+    {
+        return AssetStore.addAssetFile(asset.asset_id, "flv", asset_file)
+    })
+    .then(function(asset)
+    {
+        console.log(asset)
     })
 
     response.send("Downloading " + youtube_id)

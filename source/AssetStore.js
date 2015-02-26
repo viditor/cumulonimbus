@@ -40,21 +40,42 @@ AssetStore.prototype.getAllAssets = function()
     .bind(this))
 }
 
-AssetStore.prototype.addAsset = function()
+AssetStore.prototype.addAsset = function(asset)
 {
     return new Bluebird(function(resolve, reject)
     {
-        var asset = 
+        if(asset.asset_id === undefined)
         {
-            "asset_id": asset_id,
-            "date": Date.now()
+            asset.asset_id = 1
         }
+        if(asset.date_created === undefined)
+        {
+            asset.date_created = Date.now()
+        }
+        if(asset.date_Touched === undefined)
+        {
+            asset.date_touched = Date.now()
+        }
+        if(asset.files === undefined)
+        {
+            asset.files = {}
+        }
+
         this.assets[asset_id] = asset
 
         this.trigger("add asset", asset)
         resolve(asset)
     }
     .bind(this))
+}
+
+AssetStore.prototype.addAssetFile = function(asset_id, file_type, file_path)
+{
+    var asset = this.assets[asset_id]
+    asset.files[file_type] = file_path
+
+    this.trigger("update asset", asset)
+    resolve(asset)
 }
 
 AssetStore.prototype.nukeAssets = function()
