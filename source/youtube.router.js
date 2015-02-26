@@ -1,95 +1,83 @@
-var fs = require("fs");
-var path = require("path");
-var youtube = require("./youtube.process");
-var mongoose = require("mongoose");
+var fs = require("fs")
+var path = require("path")
+var express = require("express")
+var mongoose = require("mongoose")
 
-var router = require("express").Router();
+var AssetStore = require("./AssetStore.js")
+var youtube = require("./youtube.process.js")
+
+var router = express.Router()
 
 router["get"]("/", function(request, response)
 {
-    mongoose.model("Asset").find(function(error, data)
+    AssetStore.getAllAssets().then(function(assets)
     {
-        if(error || !data)
-        {
-            response.status(404).send("Could not get list of assets.");
-        }
-        else
-        {
-            response.send(data);
-        }
+        response.status(200).send(assets)
     })
-});
+    .catch(function(error)
+    {
+        response.status(400).send(error)
+    })
+})
 
 router["get"]("/:ytid.:ext", function(request, response, next)
 {
-    var ytid = request.params.ytid;
-    var ext = request.params.ext;
+    var ytid = request.params.ytid
+    var ext = request.params.ext
     
     if(["mp4", "webm", "ogv"].indexOf(ext) == -1)
     {
-        response.status(400).send("Unsupported Filetype");
+        response.status(400).send("Unsupported Filetype")
     }
     else
     {
-        response.send("get a youtube video file");
-        //asset.touch();
+        AssetStore.getAssetFile(ytid, ext).then(function(asset_file)
+        {
+            response.status(200).send(asset_file)
+        })
+        .catch(function(error)
+        {
+            response.status(400).send(error)
+        })
     }
-});
+})
 
 router["get"]("/:ytid", function(request, response)
 {
-    var _ytid = request.params.ytid;
+    var youtube_id = request.params.ytid
 
-    mongoose.model("Asset").findOne({ytid: _ytid}, function(findError, asset)
+    AssetStore.getAsset(youtube_id).then(function(assets)
     {
-
-        if(findError || !asset)
-        {
-            response.send("Video with ytid " + _ytid + " is not on the server.");
-        }
-        else
-        {
-            asset.touch();
-            response.send(asset);
-        }
+        response.status(200).send(assets)
     })
-});
+    .catch(function(error)
+    {
+        response.status(400).send(error)
+    })
+})
 
 router["post"]("/:ytid", function(request, response)
 {
-    var _ytid = request.params.ytid;
+    var youtube_id = request.params.ytid
 
-    console.log(Date.now(), "Beginning Youtube Download");
-    youtube.download(_ytid).then(function()
+    console.log(Date.now(), "Beginning Youtube Download")
+    youtube.download(youtube_id).then(function(asset_file)
     {
-        console.log(Date.now(), "Finishing Youtube Download");
-
-        mongoose.model("Asset").create
-        ({
-            ytid: _ytid,
-            files:
-            {
-                original: "",
-                mp4: "",
-                webm: "", 
-                ogv: ""
-            },
-            dates:
-            {
-                created: Date.now(),
-                touched: Date.now()
-            }
-        });
+        console.log(asset_file);
+        console.log(Date.now(), "Finishing Youtube Download")
+        //add video to asset store
+        //transcode video, add that to asset store
+        //save all of this in a job store..?
     })
 
-    response.send("Downloading http://www.youtube.com/watch?v=" + _ytid + " to the server.");
-});
+    response.send("Downloading " + youtube_id)
+})
 
 router["delete"]("/:ytid", function(request, response)
 {
-    var _ytid = request.params.ytid;
+    var youtube_id = request.params.ytid
     
-    response.send("add a youtube video");
-});
+    response.send("Deleting " + youtube_id)
+})
 
-module.exports = router;
+module.exports = router

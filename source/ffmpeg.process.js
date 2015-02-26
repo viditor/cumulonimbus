@@ -113,10 +113,3 @@ module.exports.webtranscode = function(directory, file_handle)
     
     return Bluebird.all(transcodings);
 }
-
-module.exports.trim = function(asset_path, clip_path, left_trim, right_trim)
-{
-    console.log(asset_path, clip_path, left_trim, right_trim);
-}
-
-module.exports.trim("../assets/UiyDmqO59QE.flv", "../clips/1.flv", 1, 2);

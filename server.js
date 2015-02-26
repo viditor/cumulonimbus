@@ -1,17 +1,19 @@
+//////////////
+//Importing//
+////////////
+
 var http = require("http");
 var express = require("express");
 var socketio = require("socket.io");
 
-var AssetStore = require("./source/asset.store.js");
+var AssetStore = require("./source/AssetStore.js");
 
 /////////////////
 //Initializing//
 ///////////////
 
-var MyAssets = new AssetStore();
-
-require("./source/mongoose.connection");
-require("./source/mongoose.schemas");
+//require("./source/mongoose.connection");
+//require("./source/mongoose.schemas");
 
 ////////////
 //Routing//
@@ -20,13 +22,6 @@ require("./source/mongoose.schemas");
 application = express();
 application.use("/v2", require("./source/router.js"));
 application.use("/greet", require("./source/greet.router.js"));
-
-var asset_id = 1;
-application["get"]("/debug", function(request, response) {
-    MyAssets.addAsset(asset_id++);
-    response.status(200).send("OK");
-});
-
 application["all"]("*", function(request, response)
 {
     response.status(404).send("put error message here");
@@ -47,7 +42,7 @@ server.listen(port, function()
 //Streaming//
 ////////////
 
-var io = socketio(server);
+io = socketio(server);
 io.on("connection", function(socket)
 {
     var assets = MyAssets.getAllAssets()
