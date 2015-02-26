@@ -10,8 +10,12 @@ var AssetStore = require("./AssetStore.js");
 
 var MyAssets = new AssetStore();
 
-//require("./source/mongoose.connection");
-//require("./source/mongoose.schemas");
+require("./source/mongoose.connection");
+require("./source/mongoose.schemas");
+
+////////////
+//Routing//
+//////////
 
 application = express();
 application.use("/v2", require("./source/router.js"));
