@@ -40,7 +40,8 @@ module.exports.download = function(asset_id, youtube_id)
             downloading.on("data", function(data)
             {
                 current_amount += data.length
-                AssetStore.updateAsset(asset_id, {"progress": current_amount / total_amount})
+                var progress = (current_amount / total_amount) * 100
+                AssetStore.updateAsset(asset_id, {"progress": progress})
             })
         })
         

@@ -1,10 +1,12 @@
 var deepmerge = require("deepmerge")
 var Bluebird = require("bluebird")
+var uuid = require("node-uuid")
 
 var Asset = require("./asset.schema.js")
 
 var AssetStore = function()
 {
+    this.assets = new Object()
     this.listeners = new Object()
 }
 
@@ -52,6 +54,14 @@ AssetStore.prototype.getAllAssets = function()
     .bind(this))
 }
 
+AssetStore.prototype.forEachAsset = function(callback)
+{
+    for(var asset_id in this.assets)
+    {
+        callback(this.assets[asset_id])
+    }
+}
+
 AssetStore.prototype.addAsset = function(asset)
 {
     return new Bluebird(function(resolve, reject)
@@ -62,7 +72,7 @@ AssetStore.prototype.addAsset = function(asset)
         }
         if(asset.asset_id === undefined)
         {
-            asset.asset_id = 1
+            asset.asset_id = uuid.v4()
         }
         if(asset.dates === undefined)
         {
@@ -93,23 +103,9 @@ AssetStore.prototype.updateAsset = function(asset_id, reasset)
     return new Bluebird(function(resolve, reject)
     {
         var asset = this.assets[asset_id]
-
         this.assets[asset_id] = deepmerge(asset, reasset)
         this.trigger("update asset", this.assets[asset_id])
         resolve(asset_id)
-    }
-    .bind(this))
-}
-
-AssetStore.prototype.addAssetFile = function(asset_id, file_type, file_path)
-{
-    return new Bluebird(function(resolve, reject)
-    {
-        var asset = this.assets[asset_id]
-        asset.files[file_type] = file_path
-
-        this.trigger("update asset", asset)
-        resolve(asset)
     }
     .bind(this))
 }

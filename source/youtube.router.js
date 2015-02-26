@@ -72,28 +72,13 @@ router["post"]("/:ytid", function(request, response)
 
     AssetStore.addAsset().then(function(asset_id)
     {
-        response.status(200).send(asset_id)
-        return asset_id
-    })
-    .then(function(asset_id)
-    {
+        response.status(200).send({asset_id: asset_id})
         return YoutubeUtils.download(asset_id, youtube_id)
-    }
+    })
     .then(function(asset_id)
     {
         return asset_id
         //todo: transcode the asset into other formats.
-    })
-    .then(function(asset_id)
-    {
-        return AssetStore.getAsset(asset_id).then(function(asset)
-        {
-            console.log(asset)
-        })
-    })
-    .catch(function(error)
-    {
-        //todo: nullify the partially download asset.
     })
 })
 

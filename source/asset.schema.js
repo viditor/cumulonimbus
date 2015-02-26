@@ -19,7 +19,7 @@ var AssetSchema = new Schema({
     }
 });
 
-assetSchema.methods.touch = function(callback) {
+AssetSchema.methods.touch = function(callback) {
     if(typeof callback === "undefined") {
         callback = function(error) {
             if(error) {
