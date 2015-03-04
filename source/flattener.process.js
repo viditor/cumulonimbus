@@ -16,9 +16,6 @@ module.exports.flatten = function(tickSortedClips)
     {
         var clip = tickSortedClips[i];
         
-        // For now, naively put all clips on track 0
-        clip.track = 0;
-
         // If there is space between the beginning of this clip and the end of previous clip
         var timeBetweenPrevious = clip.tick - previousEndTick;
         if (timeBetweenPrevious > 0)
@@ -28,18 +25,62 @@ module.exports.flatten = function(tickSortedClips)
             i++;
         }
         // If the previous clip overlaps with this clip
+        // TODO: Handle the case where > 2 clips overlap
         else if (timeBetweenPrevious < 0)
         {
-            // TODO
-            var overlapStart = 0;
-            var overlapEnd = 0;
+            // Get reference to previous clip
+            var previousClip = tickSortedClips[i-1];
+
+            // Build container for inner clips
+            var containerClip = cloneClip(clip);
+            containerClip._id = "container-placeholder"
+            containerClip.asset_id = "container-placeholder"
+            containerClip.length = timeBetweenPrevious;
+            containerClip.trim.left = 0;
+            containerClip.trim.right = 0;
+            containerClip.track = 0;
+
+            // Generate inner clips
+            var rightInnerClip = cloneClip(clip);
+            var leftInnerClip = cloneClip(previousClip);
+            
+            // Trim inner clips to fit in container
+            leftInnerClip.trim.left = leftInnerClip.length - timeBetweenPrevious;
+            rightInnerClip.trim.right = rightInnerClip.length - timeBetweenPrevious;
+
+            // Add inner clips to container
+            // TODO: Order inner clips by track
+            containerClip.subclips = [leftInnerClip, rightInnerClip];
+
+            // Trim outer clips to fit outside of container
+            previousClip.trim.right += timeBetweenPrevious;
+            clip.trim.left += timeBetweenPrevious;
+
+            // Insert container into clip list
+            tickSortedClips.splice(i, 0, containerClip);
+            i++;
         }
+
+        // For now, naively put all clips on track 0
+        clip.track = 0;
+
 
         previousEndTick = clip.tick + clip.length;
     }
 
     return tickSortedClips;
 }
+
+// Creates a clone of a clip object
+function cloneClip(clip) {
+    return JSON.parse(JSON.stringify(clip));
+}
+
+// Gets the end tick of a clip based on its length
+function getEndTick(clip) {
+    return clip.tick + clip.length;
+}
+
 
 // Creates a clip of blackness for the specified project at the specified tick with the specified length
 function createBlackness(tick, length, project_id)
