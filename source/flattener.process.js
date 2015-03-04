@@ -76,12 +76,6 @@ function cloneClip(clip) {
     return JSON.parse(JSON.stringify(clip));
 }
 
-// Gets the end tick of a clip based on its length
-function getEndTick(clip) {
-    return clip.tick + clip.length;
-}
-
-
 // Creates a clip of blackness for the specified project at the specified tick with the specified length
 function createBlackness(tick, length, project_id)
 {
