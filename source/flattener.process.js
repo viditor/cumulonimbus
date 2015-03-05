@@ -28,6 +28,9 @@ module.exports.flatten = function(tickSortedClips)
         // TODO: Handle the case where > 2 clips overlap
         else if (timeBetweenPrevious < 0)
         {
+            // timeBeteweenPrevious will be negative, but we need a positive version
+            var overlapTime = -timeBetweenPrevious;
+
             // Get reference to previous clip
             var previousClip = tickSortedClips[i-1];
 
@@ -35,7 +38,7 @@ module.exports.flatten = function(tickSortedClips)
             var containerClip = cloneClip(clip);
             containerClip._id = "container-placeholder"
             containerClip.asset_id = "container-placeholder"
-            containerClip.length = timeBetweenPrevious;
+            containerClip.length = overlapTime;
             containerClip.trim.left = 0;
             containerClip.trim.right = 0;
             containerClip.track = 0;
@@ -45,16 +48,16 @@ module.exports.flatten = function(tickSortedClips)
             var leftInnerClip = cloneClip(previousClip);
             
             // Trim inner clips to fit in container
-            leftInnerClip.trim.left = leftInnerClip.length - timeBetweenPrevious;
-            rightInnerClip.trim.right = rightInnerClip.length - timeBetweenPrevious;
+            leftInnerClip.trim.left = leftInnerClip.length - overlapTime;
+            rightInnerClip.trim.right = rightInnerClip.length - overlapTime;
 
             // Add inner clips to container
             // TODO: Order inner clips by track
             containerClip.subclips = [leftInnerClip, rightInnerClip];
 
             // Trim outer clips to fit outside of container
-            previousClip.trim.right += timeBetweenPrevious;
-            clip.trim.left += timeBetweenPrevious;
+            previousClip.trim.right += overlapTime;
+            clip.trim.left += overlapTime;
 
             // Insert container into clip list
             tickSortedClips.splice(i, 0, containerClip);
