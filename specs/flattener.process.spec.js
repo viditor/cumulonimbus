@@ -3,95 +3,88 @@ var flattener = require("../source/flattener.process.js");
 describe("flattener.process.js", function()
 {
     it("\n" +
-        "AAAA\n" +
+        "1111\n" +
         "----\n" +
-        "AAAA", function()
+        "1111", function()
     {
-        var input =  [createTestClip("AAAA", 0)];
-        var output = [createTestClip("AAAA", 0)];
-
+        var input =  [createTestClip("1111", 0)];
+        var output = [createTestClip("1111", 0)];
         expect(flattener.flatten(input)).toEqual(output);
     });
 
     it ("\n" + 
-        "AAAABBBB\n" +
+        "11112222\n" +
         "--------\n" +
-        "AAAABBBB", function()
+        "11112222", function()
     {
-        var input =  [createTestClip("AAAA", 0), createTestClip("    BBBB", 0)];
-        var output = [createTestClip("AAAA", 0), createTestClip("    BBBB", 0)];
-
+        var input =  [createTestClip("1111", 0), createTestClip("    2222", 0)];
+        var output = [createTestClip("1111", 0), createTestClip("    2222", 0)];
         expect(flattener.flatten(input)).toEqual(output);
     });
 
     it ("\n" +
-        "AAAA    \n" +
-        "    BBBB\n" +
+        "1111    \n" +
+        "    2222\n" +
         "--------\n" +
-        "AAAABBBB", function()
+        "11112222", function()
     {
-        var input =  [createTestClip("AAAA", 0), createTestClip("    BBBB", 1)];
-        var output = [createTestClip("AAAA", 0), createTestClip("    BBBB", 0)];
-
+        var input =  [createTestClip("1111", 0), createTestClip("    2222", 1)];
+        var output = [createTestClip("1111", 0), createTestClip("    2222", 0)];
         expect(flattener.flatten(input)).toEqual(output);
     });
 
     it ("\n" +
-        "AAAA    BBBB\n" +
+        "1111    2222\n" +
         "------------\n" +
-        "AAAA0000BBBB", function()
+        "111100002222", function()
     {
         var input =
         [
-            createTestClip("AAAA", 0),
-            createTestClip("        BBBB", 0)
+            createTestClip("1111", 0),
+            createTestClip("        2222", 0)
         ];
         var output = 
         [
-            createTestClip("AAAA", 0),
+            createTestClip("1111", 0),
             createTestClip("    0000", 0),
-            createTestClip("        BBBB", 0)
+            createTestClip("        2222", 0)
         ];
-
         expect(flattener.flatten(input)).toEqual(output);
     });
 
 
     it ("\n" +
-        "AAAA        \n" +
-        "        BBBB\n" +
+        "1111        \n" +
+        "        2222\n" +
         "------------\n" +
-        "AAAA0000BBBB", function()
+        "111100002222", function()
     {
         var input =
         [
-            createTestClip("AAAA", 0),
-            createTestClip("        BBBB", 1)
+            createTestClip("1111", 0),
+            createTestClip("        2222", 1)
         ];
         var output = 
         [
-            createTestClip("AAAA", 0),
+            createTestClip("1111", 0),
             createTestClip("    0000", 0),
-            createTestClip("        BBBB", 0)
+            createTestClip("        2222", 0)
         ];
 
         expect(flattener.flatten(input)).toEqual(output);
     });
 
     it ("\n" +
-        "    AAAA\n" +
+        "    1111\n" +
         "--------\n" +
-        "0000AAAA", function()
+        "00001111", function()
     {
-        var input = [createTestClip("    AAAA", 0)];
-        var output = 
-        [
-            createTestClip("0000", 0),
-            createTestClip("    AAAA", 0),
-        ];
-
+        var input = [createTestClip("    1111", 0)];
+        var output = [createTestClip("0000", 0), createTestClip("    1111", 0)];
         expect(flattener.flatten(input)).toEqual(output);
     });
+
+    
 });
 
 
