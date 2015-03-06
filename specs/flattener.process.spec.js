@@ -106,35 +106,121 @@ describe("flattener.process.js", function()
         "AA##BB\n" +
         "(# = [A, B])\n", function()
     {
-        var inputClipA = createTestClip("AAAA", 0);
-        var inputClipB = createTestClip("  BBBB", 1);
-        var input =  [inputClipA, inputClipB];
+        var inputA = createTestClip("AAAA", 0);
+        var inputB = createTestClip("  BBBB", 1);
+        var input =  [inputA, inputB];
 
-        var outputClipA = cloneClip(inputClipA);
-            outputClipA.trim.right += 2000;
+    var outputA = cloneClip(inputA);
+            outputA.trim.right += 2000;
 
-        var outputClipAB = cloneClip(input[1]);
-            outputClipAB.track = 0;
-            outputClipAB.length = 2000;
-            tagAsContainer(outputClipAB);
+        var outputAB = cloneClip(input[1]);
+            outputAB.track = 0;
+            outputAB.length = 2000;
+            tagAsContainer(outputAB);
 
-            var innerClipA = cloneClip(inputClipA);
+            var innerClipA = cloneClip(inputA);
                 innerClipA.trim.left += 2000;
 
-            var innerClipB = cloneClip(inputClipB);
+            var innerClipB = cloneClip(inputB);
                 innerClipB.trim.right += 2000;
 
-            outputClipAB.subclips = [innerClipA, innerClipB];
+            outputAB.subclips = [innerClipA, innerClipB];
 
-        var outputClipB = cloneClip(inputClipB);
-        outputClipB.track = 0;
-        outputClipB.trim.left += 2000;
+        var outputB = cloneClip(inputB);
+            outputB.track = 0;
+            outputB.trim.left += 2000;
 
-        var output = [outputClipA, outputClipAB, outputClipB];
+        var output = [outputA, outputAB, outputB];
         expect(flattener.flatten(input)).toEqual(output);
     });
+
+    // Case #8
+    it ("\n" +
+        "   AAAA   \n" + 
+        "BBBB  CCCC\n" + 
+        "----------\n" +
+        "BBB#AA$CCC\n" +
+        "(# = [A, B])\n" +
+        "($ = [A, C])\n", function()
+    {
+        // Input clips
+        var inputB = createTestClip("BBBB", 1);
+        var inputA = createTestClip("   AAAA", 0);
+        var inputC = createTestClip("      CCCC", 1);
+
+        var outputB = configureClip(cloneClip(inputB), 
+        {
+            "trim":
+            {
+                "left": 0,
+                "right": 1000
+            }, 
+            "track":0
+        });
+
+        var outputBA = configureClip(cloneClip(inputA),
+        {
+            "track": 0,
+            "length": 1000, 
+            "subclips":
+            [
+                configureClip(cloneClip(inputB), {"trim":{"left": 3000, "right": 0}, "track":0}),
+                configureClip(cloneClip(inputA), {"trim":{"left": 0, "right": 3000}}),
+            ]
+        });
+        tagAsContainer(outputBA);
+
+        var outputA = configureClip(cloneClip(inputA), 
+        {
+            "trim":
+            {
+                "left": 1000,
+                "right": 1000
+            }, 
+            "track":0
+        });
+
+        var outputAC = configureClip(cloneClip(inputC),
+        {
+            "track": 0,
+            "length": 1000, 
+            "subclips":
+            [
+                configureClip(cloneClip(inputA), {"trim":{"left":3000, "right":0}}),
+                configureClip(cloneClip(inputC), {"trim":{"left":0, "right":3000}}),
+            ]
+        });
+        tagAsContainer(outputAC);
+
+        var outputC = configureClip(cloneClip(inputC), 
+        {
+            "trim":
+            {
+                "left": 1000,
+                "right": 0
+            }, 
+            "track":0
+        });
+
+        var input =  [inputB, inputA, inputC];
+        var output = [outputB, outputBA, outputA, outputAC, outputC];
+        expect(flattener.flatten(input)).toEqual(output);
+    });
+
+
+
 });
 
+// Set options on an existing clip object
+function configureClip(clip, options)
+{
+    for (key in options)
+    {
+        clip[key] = options[key];
+    }
+
+    return clip;
+}
 
 // Creates a clone of a clip object
 function cloneClip(clip) {
