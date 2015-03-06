@@ -108,28 +108,24 @@ describe("flattener.process.js", function()
     {
         var inputA = createTestClip("AAAA", 0);
         var inputB = createTestClip("  BBBB", 1);
+
+        var outputA = configureClip(cloneClip(inputA), {"trim":{"left":0, "right":2000}});
+
+        var outputAB = configureClip(cloneClip(inputB), 
+        {
+            "track": 0,
+            "length": 2000,
+            "subclips":
+            [
+                configureClip(cloneClip(inputA), {"trim":{"left":2000, "right":0}}),
+                configureClip(cloneClip(inputB), {"trim":{"left":0, "right":2000}}),
+            ]
+        });
+        tagAsContainer(outputAB);
+
+        var outputB = configureClip(cloneClip(inputB), {"track":0, "trim":{"left":2000, "right":0}});
+        
         var input =  [inputA, inputB];
-
-    var outputA = cloneClip(inputA);
-            outputA.trim.right += 2000;
-
-        var outputAB = cloneClip(input[1]);
-            outputAB.track = 0;
-            outputAB.length = 2000;
-            tagAsContainer(outputAB);
-
-            var innerClipA = cloneClip(inputA);
-                innerClipA.trim.left += 2000;
-
-            var innerClipB = cloneClip(inputB);
-                innerClipB.trim.right += 2000;
-
-            outputAB.subclips = [innerClipA, innerClipB];
-
-        var outputB = cloneClip(inputB);
-            outputB.track = 0;
-            outputB.trim.left += 2000;
-
         var output = [outputA, outputAB, outputB];
         expect(flattener.flatten(input)).toEqual(output);
     });
@@ -206,8 +202,6 @@ describe("flattener.process.js", function()
         var output = [outputB, outputBA, outputA, outputAC, outputC];
         expect(flattener.flatten(input)).toEqual(output);
     });
-
-
 
 });
 
