@@ -154,17 +154,17 @@ describe("flattener.process.js", function()
             "track":0
         });
 
-        var outputBA = configureClip(cloneClip(inputA),
+        var outputAB = configureClip(cloneClip(inputA),
         {
             "track": 0,
             "length": 1000, 
             "subclips":
             [
-                configureClip(cloneClip(inputB), {"trim":{"left": 3000, "right": 0}, "track":0}),
                 configureClip(cloneClip(inputA), {"trim":{"left": 0, "right": 3000}}),
+                configureClip(cloneClip(inputB), {"trim":{"left": 3000, "right": 0}, "track":0})
             ]
         });
-        tagAsContainer(outputBA);
+        tagAsContainer(outputAB);
 
         var outputA = configureClip(cloneClip(inputA), 
         {
@@ -199,7 +199,7 @@ describe("flattener.process.js", function()
         });
 
         var input =  [inputB, inputA, inputC];
-        var output = [outputB, outputBA, outputA, outputAC, outputC];
+        var output = [outputB, outputAB, outputA, outputAC, outputC];
         expect(flattener.flatten(input)).toEqual(output);
     });
 

@@ -52,8 +52,9 @@ module.exports.flatten = function(tickSortedClips)
             rightInnerClip.trim.right = rightInnerClip.length - overlapTime;
 
             // Add inner clips to container
-            // TODO: Order inner clips by track
-            containerClip.subclips = [leftInnerClip, rightInnerClip];
+            containerClip.subclips = (leftInnerClip.track < rightInnerClip.track) ?
+                [leftInnerClip, rightInnerClip] :
+                [rightInnerClip, leftInnerClip];
 
             // Trim outer clips to fit outside of container
             previousClip.trim.right += overlapTime;
