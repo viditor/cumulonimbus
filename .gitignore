@@ -2,4 +2,7 @@ node_modules
 *~
 #*#
 #*#~
+mailKeys.js
 assets
+.DS_Store
+*.log
