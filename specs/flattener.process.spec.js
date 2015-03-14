@@ -109,7 +109,7 @@ describe("flattener.process.js", function()
         var inputA = createTestClip("AAAA", 0);
         var inputB = createTestClip("  BBBB", 1);
 
-        var outputA = configureClip(cloneClip(inputA), {"trim":{"left":0, "right":2000}});
+        var outputA = configureClip(cloneClip(inputA), {"trim": {"left": 0, "right": 2000}});
 
         var outputAB = configureClip(cloneClip(inputB), 
         {
@@ -117,13 +117,13 @@ describe("flattener.process.js", function()
             "length": 2000,
             "subclips":
             [
-                configureClip(cloneClip(inputA), {"trim":{"left":2000, "right":0}}),
-                configureClip(cloneClip(inputB), {"trim":{"left":0, "right":2000}}),
+                configureClip(cloneClip(inputA), {"trim": {"left": 2000, "right": 0}}),
+                configureClip(cloneClip(inputB), {"trim": {"left": 0, "right": 2000}}),
             ]
         });
         tagAsContainer(outputAB);
 
-        var outputB = configureClip(cloneClip(inputB), {"track":0, "trim":{"left":2000, "right":0}});
+        var outputB = configureClip(cloneClip(inputB), {"track":0, "trim": {"left": 2000, "right": 0}});
         
         var input =  [inputA, inputB];
         var output = [outputA, outputAB, outputB];
@@ -139,20 +139,13 @@ describe("flattener.process.js", function()
         "(# = [A, B])\n" +
         "($ = [A, C])\n", function()
     {
-        // Input clips
         var inputB = createTestClip("BBBB", 1);
         var inputA = createTestClip("   AAAA", 0);
         var inputC = createTestClip("      CCCC", 1);
 
-        var outputB = configureClip(cloneClip(inputB), 
-        {
-            "trim":
-            {
-                "left": 0,
-                "right": 1000
-            }, 
-            "track":0
-        });
+        var outputB = configureClip(cloneClip(inputB), {"trim": {"left": 0, "right": 1000 }, "track": 0});
+        var outputA = configureClip(cloneClip(inputA), {"trim": {"left": 1000, "right": 1000}, "track": 0});
+        var outputC = configureClip(cloneClip(inputC), {"trim": {"left": 1000, "right": 0}, "track":0});
 
         var outputAB = configureClip(cloneClip(inputA),
         {
@@ -160,21 +153,11 @@ describe("flattener.process.js", function()
             "length": 1000, 
             "subclips":
             [
-                configureClip(cloneClip(inputA), {"trim":{"left": 0, "right": 3000}}),
-                configureClip(cloneClip(inputB), {"trim":{"left": 3000, "right": 0}, "track":0})
+                configureClip(cloneClip(inputA), {"trim": {"left": 0, "right": 3000}}),
+                configureClip(cloneClip(inputB), {"trim": {"left": 3000, "right": 0}, "track": 0})
             ]
         });
         tagAsContainer(outputAB);
-
-        var outputA = configureClip(cloneClip(inputA), 
-        {
-            "trim":
-            {
-                "left": 1000,
-                "right": 1000
-            }, 
-            "track":0
-        });
 
         var outputAC = configureClip(cloneClip(inputC),
         {
@@ -187,16 +170,6 @@ describe("flattener.process.js", function()
             ]
         });
         tagAsContainer(outputAC);
-
-        var outputC = configureClip(cloneClip(inputC), 
-        {
-            "trim":
-            {
-                "left": 1000,
-                "right": 0
-            }, 
-            "track":0
-        });
 
         var input =  [inputB, inputA, inputC];
         var output = [outputB, outputAB, outputA, outputAC, outputC];
