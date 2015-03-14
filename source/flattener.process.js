@@ -1,3 +1,4 @@
+
 /**
  * flatten: Handles edge cases in a clip list to prepare it for rendering. Flattens multiple tracks into a single track and replaces spaces with seconds of blackness.
  *
@@ -6,7 +7,7 @@
  * A JSON array of clip metadata. Should be sorted by tic in ascending order. 
  *
  * OUTPUT
- * - A promise that will resolve when the flattened array of clips has been completed, and will return the flattened array.
+ * - The flattened array of clips.
  * 
  */
 module.exports.flatten = function(tickSortedClips)
