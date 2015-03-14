@@ -109,21 +109,21 @@ describe("flattener.process.js", function()
         var inputA = createTestClip("AAAA", 0);
         var inputB = createTestClip("  BBBB", 1);
 
-        var outputA = configureClip(cloneClip(inputA), {"trim": {"left": 0, "right": 2000}});
+        var outputA = cloneAndEdit(inputA, {"trim": {"left": 0, "right": 2000}});
 
-        var outputAB = configureClip(cloneClip(inputB), 
+        var outputAB = cloneAndEdit(inputB,
         {
             "track": 0,
             "length": 2000,
             "subclips":
             [
-                configureClip(cloneClip(inputA), {"trim": {"left": 2000, "right": 0}}),
-                configureClip(cloneClip(inputB), {"trim": {"left": 0, "right": 2000}}),
+                cloneAndEdit(inputA, {"trim": {"left": 2000, "right": 0}}),
+                cloneAndEdit(inputB, {"trim": {"left": 0, "right": 2000}}),
             ]
         });
         tagAsContainer(outputAB);
 
-        var outputB = configureClip(cloneClip(inputB), {"track":0, "trim": {"left": 2000, "right": 0}});
+        var outputB = cloneAndEdit(inputB, {"track":0, "trim": {"left": 2000, "right": 0}});
         
         var input =  [inputA, inputB];
         var output = [outputA, outputAB, outputB];
@@ -143,30 +143,30 @@ describe("flattener.process.js", function()
         var inputA = createTestClip("   AAAA", 0);
         var inputC = createTestClip("      CCCC", 1);
 
-        var outputB = configureClip(cloneClip(inputB), {"trim": {"left": 0, "right": 1000 }, "track": 0});
-        var outputA = configureClip(cloneClip(inputA), {"trim": {"left": 1000, "right": 1000}, "track": 0});
-        var outputC = configureClip(cloneClip(inputC), {"trim": {"left": 1000, "right": 0}, "track": 0});
+        var outputB = cloneAndEdit(inputB, {"trim": {"left": 0, "right": 1000 }, "track": 0});
+        var outputA = cloneAndEdit(inputA, {"trim": {"left": 1000, "right": 1000}, "track": 0});
+        var outputC = cloneAndEdit(inputC, {"trim": {"left": 1000, "right": 0}, "track": 0});
 
-        var outputAB = configureClip(cloneClip(inputA),
+        var outputAB = cloneAndEdit(inputA,
         {
             "track": 0,
             "length": 1000, 
             "subclips":
             [
-                configureClip(cloneClip(inputA), {"trim": {"left": 0, "right": 3000}}),
-                configureClip(cloneClip(inputB), {"trim": {"left": 3000, "right": 0}, "track": 0})
+                cloneAndEdit(inputA, {"trim": {"left": 0, "right": 3000}}),
+                cloneAndEdit(inputB, {"trim": {"left": 3000, "right": 0}, "track": 0})
             ]
         });
         tagAsContainer(outputAB);
 
-        var outputAC = configureClip(cloneClip(inputC),
+        var outputAC = cloneAndEdit(inputC,
         {
             "track": 0,
             "length": 1000, 
             "subclips":
             [
-                configureClip(cloneClip(inputA), {"trim": {"left": 3000, "right": 0}}),
-                configureClip(cloneClip(inputC), {"trim": {"left": 0, "right": 3000}}),
+                cloneAndEdit(inputA, {"trim": {"left": 3000, "right": 0}}),
+                cloneAndEdit(inputC, {"trim": {"left": 0, "right": 3000}}),
             ]
         });
         tagAsContainer(outputAC);
@@ -178,8 +178,8 @@ describe("flattener.process.js", function()
 
 });
 
-// Set options on an existing clip object
-function configureClip(clip, options)
+// Sets options on an existing clip object
+function editClip(clip, options)
 {
     for (key in options)
     {
@@ -190,8 +190,15 @@ function configureClip(clip, options)
 }
 
 // Creates a clone of a clip object
-function cloneClip(clip) {
+function cloneClip(clip)
+{
     return JSON.parse(JSON.stringify(clip));
+}
+
+// Configures a clone of a clip object
+function cloneAndEdit(clip, options)
+{
+    return editClip(cloneClip(clip), options);
 }
 
 // Creates a test clip by looking at code string and track integer
