@@ -11,6 +11,7 @@
  */
 module.exports.flatten = function(tickSortedClips)
 {
+    // Insert blackness and handle clip overlap
     var previousEndTick = 0;
     for (var i = 0; i < tickSortedClips.length; i++)
     {
@@ -36,8 +37,8 @@ module.exports.flatten = function(tickSortedClips)
 
             // Build container for inner clips
             var containerClip = cloneClip(clip);
-            containerClip._id = "container-placeholder"
-            containerClip.asset_id = "container-placeholder"
+            containerClip._id = "[container]"
+            containerClip.asset_id = "[container]"
             containerClip.length = overlapTime;
             containerClip.trim.left = 0;
             containerClip.trim.right = 0;
@@ -65,11 +66,13 @@ module.exports.flatten = function(tickSortedClips)
             i++;
         }
 
-        // For now, naively put all clips on track 0
-        clip.track = 0;
-
-
         previousEndTick = clip.tick + clip.length;
+    }
+
+    // Flatten all outside clips (Set them to track 0)
+    for (var i = 0; i < tickSortedClips.length; i++)
+    {
+        tickSortedClips[i].track = 0;
     }
 
     return tickSortedClips;
@@ -84,8 +87,8 @@ function cloneClip(clip) {
 function createBlackness(tick, length, project_id)
 {
     return {
-        "_id": "blackness-placeholder",
-        "asset_id": "blackness-placeholder",
+        "_id": "[blackness]",
+        "asset_id": "[blackness]",
         "project_id": project_id,
         "trim":
         {

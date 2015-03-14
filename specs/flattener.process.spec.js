@@ -143,7 +143,7 @@ describe("flattener.process.js", function()
         var inputA = createTestClip("   AAAA", 0);
         var inputC = createTestClip("      CCCC", 1);
 
-        var outputB = cloneAndEdit(inputB, {"trim": {"left": 0, "right": 1000 }, "track": 0});
+        var outputB = cloneAndEdit(inputB, {"trim": {"left": 0, "right": 1000}, "track": 0});
         var outputA = cloneAndEdit(inputA, {"trim": {"left": 1000, "right": 1000}, "track": 0});
         var outputC = cloneAndEdit(inputC, {"trim": {"left": 1000, "right": 0}, "track": 0});
 
@@ -154,7 +154,7 @@ describe("flattener.process.js", function()
             "subclips":
             [
                 cloneAndEdit(inputA, {"trim": {"left": 0, "right": 3000}}),
-                cloneAndEdit(inputB, {"trim": {"left": 3000, "right": 0}, "track": 0})
+                cloneAndEdit(inputB, {"trim": {"left": 3000, "right": 0}})
             ]
         });
         tagAsContainer(outputAB);
@@ -175,7 +175,6 @@ describe("flattener.process.js", function()
         var output = [outputB, outputAB, outputA, outputAC, outputC];
         expect(flattener.flatten(input)).toEqual(output);
     });
-
 });
 
 // Sets options on an existing clip object
@@ -208,9 +207,9 @@ function createTestClip(code, track)
     var leftSpaceLength = code.length - name.length;
 
     var testClip = {
-        "_id": "test-clip-" + name,
-        "asset_id": "test-asset-" + name,
-        "project_id": "test-project",
+        "_id": "test-" + name,
+        "asset_id": "test-" + name,
+        "project_id": "test",
         "trim":
         {
             "left": 0,
@@ -232,12 +231,12 @@ function createTestClip(code, track)
 
 function tagAsBlackness(clip)
 {
-    clip._id = "blackness-placeholder";
-    clip.asset_id = "blackness-placeholder";
+    clip._id = "[blackness]";
+    clip.asset_id = "[blackness]";
 }
 
 function tagAsContainer(clip)
 {
-    clip._id = "container-placeholder";
-    clip.asset_id = "container-placeholder";
+    clip._id = "[container]";
+    clip.asset_id = "[container]";
 }
