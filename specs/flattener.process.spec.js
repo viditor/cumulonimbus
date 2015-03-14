@@ -207,6 +207,53 @@ describe("flattener.process.js", function()
         expect(flattener.flatten(input)).toEqual(output);
     });
 
+    // Case #10
+    it ("\n" +
+        "AAAA  BBBB\n" + 
+        "   CCCC   \n" + 
+        "----------\n" +
+        "AAA#CC$BBB\n" +
+        "(# = [A, C])\n" +
+        "($ = [B, C])\n", function()
+    {
+        var inputA = createTestClip("AAAA", 0);
+        var inputC = createTestClip("   CCCC", 1);
+        var inputB = createTestClip("      BBBB", 0);
+
+        var outputA = cloneAndEdit(inputA, {"trim": {"left": 0, "right": 1000}, "track": 0});
+        var outputC = cloneAndEdit(inputC, {"trim": {"left": 1000, "right": 1000}, "track": 0});
+        var outputB = cloneAndEdit(inputB, {"trim": {"left": 1000, "right": 0}, "track": 0});
+
+        var outputAC = cloneAndEdit(inputC,
+        {
+            "track": 0,
+            "length": 1000,
+            "subclips":
+            [
+                cloneAndEdit(inputA, {"trim": {"left": 3000, "right": 0}}),
+                cloneAndEdit(inputC, {"trim": {"left": 0, "right": 3000}})
+            ]
+        });
+        tagAsContainer(outputAC);
+
+        var outputBC = cloneAndEdit(inputB,
+        {
+            "track": 0,
+            "length": 1000,
+            "subclips":
+            [
+                cloneAndEdit(inputB, {"trim": {"left": 0, "right": 3000}}),
+                cloneAndEdit(inputC, {"trim": {"left": 3000, "right": 0}})
+            ]
+        });
+        tagAsContainer(outputBC);
+
+        var input =  [inputA, inputC, inputB];
+        var output = [outputA, outputAC, outputC, outputBC, outputB];
+        expect(flattener.flatten(input)).toEqual(output);
+    });
+
+
 });
 
 // Sets options on an existing clip object
