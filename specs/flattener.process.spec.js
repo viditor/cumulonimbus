@@ -254,6 +254,39 @@ describe("flattener.process.js", function()
     });
 
 
+    // Case #11
+    it ("\n" +
+        "AA  BB  \n" + 
+        "  CCCCCC\n" + 
+        "--------\n" +
+        "AACC##CC\n" +
+        "(# = [B, C])\n", function()
+    {
+        var inputA = createTestClip("AA", 0);
+        var inputC = createTestClip("  CCCCCC", 1);
+        var inputB = createTestClip("    BB", 0);
+
+        var outputA = cloneClip(inputA);
+        var outputC_1 = cloneAndEdit(inputC, {"trim": {"left": 0, "right": 4000}, "track": 0});
+        var outputC_2 = cloneAndEdit(inputC, {"trim": {"left": 4000, "right": 0}, "track": 0});
+
+        var outputBC = cloneAndEdit(inputB,
+        {
+            "track": 0,
+            "length": 2000,
+            "subclips":
+            [
+                cloneAndEdit(inputB, {"trim": {"left": 0, "right": 0}}),
+                cloneAndEdit(inputC, {"trim": {"left": 2000, "right": 2000}})
+            ]
+        });
+        tagAsContainer(outputBC);
+
+        var input =  [inputA, inputC, inputB];
+        var output = [outputA, outputC_1, outputBC, outputC_2];
+        expect(flattener.flatten(input)).toEqual(output);
+    });
+
 });
 
 // Sets options on an existing clip object
@@ -295,8 +328,8 @@ function createTestClip(code, track)
             "right": 0
         },
 
-        "length": name.length * 1000,
         "tick": leftSpaceLength * 1000,
+        "length": name.length * 1000,
         "track": track
     };
 
