@@ -391,19 +391,40 @@ function cloneAndEdit(clip, options)
 // Creates a test clip by looking at code string and track integer
 function createTestClip(code, track)
 {
-    var name = code.replace(/^\s+/, "");
+    var name = leftTrim(code);
     var leftSpaceLength = code.length - name.length;
+    
+    // Determine left and right trim from code
+    var trim = {
+        "left": 0,
+        "right": 0
+    };
+    var onLeftSide = true;
+    for (var i = 0, len = name.length; i < len; i++)
+    {
+        if (isLowerCaseLetter(name[i]))
+        {
+            if (onLeftSide)
+            {
+                trim.left += 1000;
+            }
+            else
+            {
+                trim.left += 1000;
+            }
+        }
+        else
+        {
+            onLeftSide = false;
+        }
+
+    }
 
     var testClip = {
         "_id": "test-" + name,
         "asset_id": "test-" + name,
         "project_id": "test",
-        "trim":
-        {
-            "left": 0,
-            "right": 0
-        },
-
+        "trim": trim,
         "tick": leftSpaceLength * 1000,
         "length": name.length * 1000,
         "track": track
@@ -415,6 +436,17 @@ function createTestClip(code, track)
     }
 
     return testClip;
+}
+
+function leftTrim(str)
+{
+    return str.replace(/^\s+/, "");
+}
+
+function isLowerCaseLetter(character)
+{
+    return character.match(/[A-Za-z]/) &&
+        character == character.toLowerCase();
 }
 
 function tagAsBlackness(clip)
