@@ -363,9 +363,33 @@ describe("flattener.process.js", function()
         expectEqual_JSONFormat(flattener.flatten(input), output);
     });
 
+
+
+    // Case #14
+    it ("\n" +
+        "AAaa  \n" + 
+        "  BBBB\n" + 
+        "------\n" +
+        "AABBBB\n", function()
+    {
+        var inputA = createTestClip("AAaa", 0);
+        var inputB = createTestClip("  BBBB", 1);
+
+        var outputA = cloneClip(inputA);
+        var outputB = cloneAndEdit(inputB, {"track": 0});
+
+        var input =  [inputA, inputB];
+        var output = [outputA, outputB];
+
+        expectEqual_JSONFormat(flattener.flatten(input), output);
+        // expectEqual_JSONFormat(flattener.flatten(input), output);
+    });
+
+
 });
 
 
+// Prettifies JSON objects before testing equality
 function expectEqual_JSONFormat(a, b)
 {
     var aStr = JSON.stringify(a, null,'\t')
@@ -390,7 +414,6 @@ function cloneClip(clip)
 {
     return JSON.parse(JSON.stringify(clip));
 }
-
 // Configures a clone of a clip object
 function cloneAndEdit(clip, options)
 {
@@ -419,7 +442,7 @@ function createTestClip(code, track)
             }
             else
             {
-                trim.left += 1000;
+                trim.right += 1000;
             }
         }
         else
