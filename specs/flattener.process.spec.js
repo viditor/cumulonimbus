@@ -11,7 +11,7 @@ describe("flattener.process.js", function()
         var input =  [createTestClip("AAAA", 0)];
         var output = [createTestClip("AAAA", 0)];
 
-        expect(flattener.flatten(input)).toEqual(output);
+        expectEqual_JSONFormat(flattener.flatten(input), output);
     });
 
     // Case #2
@@ -23,7 +23,7 @@ describe("flattener.process.js", function()
         var input =  [createTestClip("AAAA", 0), createTestClip("    BBBB", 0)];
         var output = [createTestClip("AAAA", 0), createTestClip("    BBBB", 0)];
 
-        expect(flattener.flatten(input)).toEqual(output);
+        expectEqual_JSONFormat(flattener.flatten(input), output);
     });
 
     // Case #3
@@ -36,7 +36,7 @@ describe("flattener.process.js", function()
         var input =  [createTestClip("AAAA", 0), createTestClip("    BBBB", 1)];
         var output = [createTestClip("AAAA", 0), createTestClip("    BBBB", 0)];
 
-        expect(flattener.flatten(input)).toEqual(output);
+        expectEqual_JSONFormat(flattener.flatten(input), output);
     });
 
     // Case #4
@@ -57,7 +57,7 @@ describe("flattener.process.js", function()
             createTestClip("        BBBB", 0)
         ];
 
-        expect(flattener.flatten(input)).toEqual(output);
+        expectEqual_JSONFormat(flattener.flatten(input), output);
     });
 
     // Case #5
@@ -79,7 +79,7 @@ describe("flattener.process.js", function()
             createTestClip("        BBBB", 0)
         ];
 
-        expect(flattener.flatten(input)).toEqual(output);
+        expectEqual_JSONFormat(flattener.flatten(input), output);
     });
 
     // Case #6
@@ -95,7 +95,7 @@ describe("flattener.process.js", function()
             createTestClip("    AAAA", 0),
         ];
 
-        expect(flattener.flatten(input)).toEqual(output);
+        expectEqual_JSONFormat(flattener.flatten(input), output);
     });
 
     // Case #7
@@ -127,7 +127,7 @@ describe("flattener.process.js", function()
         
         var input =  [inputA, inputB];
         var output = [outputA, outputAB, outputB];
-        expect(flattener.flatten(input)).toEqual(output);
+        expectEqual_JSONFormat(flattener.flatten(input), output);
     });
 
     // Case #8
@@ -173,7 +173,7 @@ describe("flattener.process.js", function()
 
         var input =  [inputB, inputA, inputC];
         var output = [outputB, outputAB, outputA, outputAC, outputC];
-        expect(flattener.flatten(input)).toEqual(output);
+        expectEqual_JSONFormat(flattener.flatten(input), output);
     });
 
     // Case #9
@@ -204,7 +204,7 @@ describe("flattener.process.js", function()
 
         var input =  [inputB, inputA];
         var output = [outputB, outputAB, outputA];
-        expect(flattener.flatten(input)).toEqual(output);
+        expectEqual_JSONFormat(flattener.flatten(input), output);
     });
 
     // Case #10
@@ -250,7 +250,7 @@ describe("flattener.process.js", function()
 
         var input =  [inputA, inputC, inputB];
         var output = [outputA, outputAC, outputC, outputBC, outputB];
-        expect(flattener.flatten(input)).toEqual(output);
+        expectEqual_JSONFormat(flattener.flatten(input), output);
     });
 
 
@@ -284,7 +284,7 @@ describe("flattener.process.js", function()
 
         var input =  [inputA, inputC, inputB];
         var output = [outputA, outputC_1, outputBC, outputC_2];
-        expect(flattener.flatten(input)).toEqual(output);
+        expectEqual_JSONFormat(flattener.flatten(input), output);
     });
 
     // Case #12
@@ -315,7 +315,7 @@ describe("flattener.process.js", function()
 
         var input =  [inputA, inputB];
         var output = [outputA_1, outputAB, outputA_2];
-        expect(flattener.flatten(input)).toEqual(output);
+        expectEqual_JSONFormat(flattener.flatten(input),output);
     });
 
     // Case #13
@@ -360,10 +360,19 @@ describe("flattener.process.js", function()
 
         var input =  [inputA, inputC, inputB];
         var output = [outputA, outputAC, outputBC, outputB];
-        expect(flattener.flatten(input)).toEqual(output);
+        expectEqual_JSONFormat(flattener.flatten(input), output);
     });
 
 });
+
+
+function expectEqual_JSONFormat(a, b)
+{
+    var aStr = JSON.stringify(a, null,'\t')
+    var bStr = JSON.stringify(b, null,'\t')
+    expect(aStr).toEqual(bStr);
+}
+
 
 // Sets options on an existing clip object
 function editClip(clip, options)
