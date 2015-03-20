@@ -364,7 +364,6 @@ describe("flattener.process.js", function()
     });
 
 
-
     // Case #14
     it ("\n" +
         "AAaa  \n" + 
@@ -382,7 +381,39 @@ describe("flattener.process.js", function()
         var output = [outputA, outputB];
 
         expectEqual_JSONFormat(flattener.flatten(input), output);
-        // expectEqual_JSONFormat(flattener.flatten(input), output);
+    });
+
+
+    // Case #15
+    it ("\n" +
+        "AAAAaa\n" + 
+        " BBbb \n" + 
+        "------\n" +
+        "A##A00\n" +
+        "(# = [A, B])\n", function()
+    {
+        var inputA = createTestClip("AAAAaa", 0);
+        var inputB = createTestClip(" BBbb", 1);
+
+        var outputA_1 = cloneAndEdit(inputA, {"trim": {"left": 0, "right": 5000}});
+        var outputA_2 = cloneAndEdit(inputA, {"trim": {"left": 3000, "right": 2000}});
+
+        var outputAB = cloneAndEdit(inputB,
+        {
+            "track": 0,
+            "length": 2000,
+            "subclips":
+            [
+                cloneAndEdit(inputA, {"trim": {"left": 1000, "right": 3000}}),
+                cloneAndEdit(inputB, {"trim": {"left": 0, "right": 2000}})
+            ],
+            trim: {"left": 0, "right": 0}
+        });
+        tagAsContainer(outputAB);
+
+        var input =  [inputA, inputB];
+        var output = [outputA_1, outputAB, outputA_2];
+        expectEqual_JSONFormat(flattener.flatten(input),output);
     });
 
 
