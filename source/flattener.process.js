@@ -116,11 +116,11 @@ function getPointClipLinks(clips)
     for (var i = 0; i < clips.length; i++)
     {
         var clip = clips[i];
-        var start = clip.tick;
-        var end = start + clip.length;
+        var leftSide = clip.tick + clip.trim.left;
+        var rightSide = clip.tick + clip.length - clip.trim.right;
 
-        pointClipLinks = addToListInMap(pointClipLinks, start, {"clip": clip, "type": "start"});
-        pointClipLinks = addToListInMap(pointClipLinks, end, {"clip": clip, "type": "end"});
+        pointClipLinks = addToListInMap(pointClipLinks, leftSide, {"clip": clip, "type": "start"});
+        pointClipLinks = addToListInMap(pointClipLinks, rightSide, {"clip": clip, "type": "end"});
     }
 
     return pointClipLinks;
@@ -135,14 +135,14 @@ function addToListInMap(map, key, value)
     return map;
 }
 
-// Adds to the left and right trim of a clip to align it to the specified absolute start and end times
+// Sets left and right trim of a clip to align it to the specified absolute start and end times
 function alignClip(clip, targetStart, targetEnd)
 {
     var actualStart = clip.tick;
     var actualEnd = clip.tick + clip.length;
 
-    clip.trim.left += targetStart - actualStart;
-    clip.trim.right += actualEnd - targetEnd;
+    clip.trim.left = targetStart - actualStart;
+    clip.trim.right = actualEnd - targetEnd;
 
     return clip;
 }

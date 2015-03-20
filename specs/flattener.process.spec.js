@@ -436,14 +436,7 @@ function createTestClip(code, track)
     {
         if (isLowerCaseLetter(name[i]))
         {
-            if (onLeftSide)
-            {
-                trim.left += 1000;
-            }
-            else
-            {
-                trim.right += 1000;
-            }
+            trim[onLeftSide ? 'left' : 'right'] += 1000;
         }
         else
         {
