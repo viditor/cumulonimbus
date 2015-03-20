@@ -392,8 +392,8 @@ describe("flattener.process.js", function()
 // Prettifies JSON objects before testing equality
 function expectEqual_JSONFormat(a, b)
 {
-    var aStr = JSON.stringify(a, null,'\t')
-    var bStr = JSON.stringify(b, null,'\t')
+    var aStr = JSON.stringify(a, null,'    ')
+    var bStr = JSON.stringify(b, null,'    ')
     expect(aStr).toEqual(bStr);
 }
 
