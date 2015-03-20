@@ -23,6 +23,8 @@ services:
 ## Use this to prepare the system to install prerequisites or dependencies 
 before_install:
 # https://github.com/travis-ci/travis-ci/issues/281
+ - "sudo apt-add-repository -y ppa:jon-severinsson/ffmpeg"
+ - "sudo apt-get update"
  - "sudo apt-get install ffmpeg"
 
 ## Use this to install any prerequisites
