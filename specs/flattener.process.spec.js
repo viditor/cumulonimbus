@@ -407,12 +407,47 @@ describe("flattener.process.js", function()
                 cloneAndEdit(inputA, {"trim": {"left": 1000, "right": 3000}}),
                 cloneAndEdit(inputB, {"trim": {"left": 0, "right": 2000}})
             ],
-            trim: {"left": 0, "right": 0}
+            "trim": {"left": 0, "right": 0}
         });
         tagAsContainer(outputAB);
 
         var input =  [inputA, inputB];
         var output = [outputA_1, outputAB, outputA_2];
+        expectEqual_JSONFormat(flattener.flatten(input),output);
+    });
+
+    // Case #16
+    it ("\n" +
+        "aaAAaCCCc\n" + 
+        "bBBBBbb  \n" + 
+        "---------\n" +
+        "0B##BCCC0\n" +
+        "(# = [A, B])\n", function()
+    {
+        var inputA = createTestClip("aaAAa", 0);
+        var inputB = createTestClip("bBBBBbb", 1);
+        var inputC = createTestClip("     CCCc", 0);
+
+        var outputB_1 = cloneAndEdit(inputB, {"track": 0, "trim": {"left": 1000, "right": 5000}});
+        var outputB_2 = cloneAndEdit(inputB, {"track": 0, "trim": {"left": 4000, "right": 2000}});
+        var outputC = cloneAndEdit(inputC, {"trim": {"left": 0, "right": 1000}});
+
+        var outputAB = cloneAndEdit(inputA,
+        {
+            "track": 0,
+            "tick": 2000,
+            "length": 2000,
+            "subclips":
+            [
+                cloneAndEdit(inputA, {"trim": {"left": 2000, "right": 1000}}),
+                cloneAndEdit(inputB, {"trim": {"left": 2000, "right": 3000}})
+            ],
+            "trim": {"left": 0, "right": 0}
+        });
+        tagAsContainer(outputAB);
+
+        var input =  [inputA, inputB, inputC];
+        var output = [outputB_1, outputAB, outputB_2, outputC];
         expectEqual_JSONFormat(flattener.flatten(input),output);
     });
 
