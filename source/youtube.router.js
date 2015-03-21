@@ -1,10 +1,5 @@
-var fs = require("fs")
-var path = require("path")
 var express = require("express")
-var mongoose = require("mongoose")
-
 var AssetStore = require("./asset.store.js")
-var YoutubeUtils = require("./youtube.process.js")
 
 var router = express.Router()
 
@@ -25,37 +20,23 @@ router["get"]("/:ytid.:type", function(request, response, next)
     var youtube_id = request.params.ytid
     var file_type = request.params.type
     
-    if(["mp4", "webm", "ogv"].indexOf(file_type) == -1)
+    AssetStore.getAssetFile({youtube_id: youtube_id}, file_type).then(function(asset_file)
     {
-        response.status(400).send("Unsupported Filetype")
-    }
-    else
+        response.status(200).send(asset_file)
+    })
+    .catch(function(error)
     {
-        AssetStore.getAsset({youtube_id: youtube_id}).then(function(asset)
-        {
-            if(asset.files[file_type])
-            {
-                response.status(200).send(asset.files[file_type])
-            }
-            else
-            {
-                response.status(400).send("Nontranscoded Filetype")
-            }
-        })
-        .catch(function(error)
-        {
-            response.status(400).send(error)
-        })
-    }
+        response.status(400).send(error)
+    })
 })
 
 router["get"]("/:ytid", function(request, response)
 {
     var youtube_id = request.params.ytid
 
-    AssetStore.getAsset(youtube_id).then(function(assets)
+    AssetStore.getAsset({youtube_id: youtube_id}).then(function(asset)
     {
-        response.status(200).send(assets)
+        response.status(200).send(asset)
     })
     .catch(function(error)
     {
@@ -66,19 +47,28 @@ router["get"]("/:ytid", function(request, response)
 router["post"]("/:ytid", function(request, response)
 {
     var youtube_id = request.params.ytid
-
-    //todo: check if youtube_id is valid.
-    //todo: check that the asset doesn't already exist.
-
-    AssetStore.addAsset().then(function(asset_id)
+    
+    AssetStore.addAsset({youtube_id: youtube_id}).then(function(asset_id)
     {
         response.status(200).send({asset_id: asset_id})
-        return YoutubeUtils.download(asset_id, youtube_id)
     })
-    .then(function(asset_id)
+    .catch(function(error)
     {
-        return asset_id
-        //todo: transcode the asset into other formats.
+        response.status(400).send(error)
+    })
+})
+
+router["delete"]("/", function(request, response)
+{
+    var youtube_id = request.params.ytid
+    
+    AssetStore.deleteAllAssets().then(function(assets)
+    {
+        response.status(200).send(assets)
+    })
+    .catch(function(error)
+    {
+        response.status(400).send(error)
     })
 })
 
@@ -86,7 +76,14 @@ router["delete"]("/:ytid", function(request, response)
 {
     var youtube_id = request.params.ytid
     
-    response.send("Deleting " + youtube_id)
+    AssetStore.deleteAsset({youtube_id: youtube_id}).then(function(asset)
+    {
+        response.status(200).send(asset)
+    })
+    .catch(function(error)
+    {
+        response.status(400).send(error)
+    })
 })
 
 module.exports = router

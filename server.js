@@ -5,7 +5,6 @@
 var http = require("http")
 var express = require("express")
 var socketio = require("socket.io")
-var mongoose = require("mongoose")
 
 var AssetStore = require("./source/asset.store.js")
 var YoutubeUtils = require("./source/youtube.process.js")
@@ -33,25 +32,6 @@ server.listen(port, function()
     console.log("Cumulonimbus is serving at " + port)
 })
 
-///////////////
-//Databasing//
-/////////////
-
-mongoose.connect("mongodb://localhost")
-
-mongoose.connection.on("error", function(error)
-{
-    console.log("MongoDB has had an error: " + error)
-})
-
-process.on("SIGINT", function()
-{
-    mongoose.connection.close(function()
-    {
-        process.exit(0)
-    })
-})
-
 //////////////
 //Streaming//
 ////////////
@@ -63,17 +43,17 @@ io.on("connection", function(socket)
     {
         socket.emit("add asset", asset)
     })
-
+    
     AssetStore.on("add asset", function(asset)
     {
         socket.emit("add asset", asset)
     })
-
+    
     AssetStore.on("update asset", function(asset)
     {
         socket.emit("update asset", asset)
     })
-
+    
     socket.on("add asset from youtube", function(youtube_id)
     {
         AssetStore.addAsset().then(function(asset_id)

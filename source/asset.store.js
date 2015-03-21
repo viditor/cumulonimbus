@@ -1,45 +1,40 @@
 var deepmerge = require("deepmerge")
 var Bluebird = require("bluebird")
 var uuid = require("node-uuid")
+var mongojs = require("mongojs")
 
-var Asset = require("./asset.schema.js")
+Database = mongojs("localhost", ["assets"])
+Database.dropDatabase()
 
-var AssetStore = function()
-{
-    this.assets = new Object()
-    this.listeners = new Object()
-}
+var AssetStore = new Object()
 
-AssetStore.prototype.getAsset = function(asset_id)
+AssetStore.getAsset = function(asset)
 {
     return new Bluebird(function(resolve, reject)
     {
-        if(asset_id == null)
+        Database.assets.findOne(asset, function(error, asset)
         {
-            reject(new Error("Invalid Asset ID"))
-        }
-        else
-        {
-            var asset = this.assets[asset_id]
-
-            if(!asset)
+            if(error)
             {
-                reject(new Error("Asset doesn't exist"))
+                reject(error)
+            }
+            else if(!asset)
+            {
+                reject("Unavailable Asset")
             }
             else
             {
                 resolve(asset)
             }
-        }
-    }
-    .bind(this))
+        })
+    })
 }
 
-AssetStore.prototype.getAllAssets = function()
+AssetStore.getAllAssets = function()
 {
     return new Bluebird(function(resolve, reject)
     {
-        Assets.find({}, function(error, assets)
+        Database.assets.find(function(error, assets)
         {
             if(error)
             {
@@ -50,19 +45,47 @@ AssetStore.prototype.getAllAssets = function()
                 resolve(assets)
             }
         })
-    }
-    .bind(this))
+    })
 }
 
-AssetStore.prototype.forEachAsset = function(callback)
+AssetStore.forEachAsset = function(callback)
 {
-    for(var asset_id in this.assets)
+    return new Bluebird(function(resolve, reject)
     {
-        callback(this.assets[asset_id])
-    }
+        AssetStore.getAllAssets().then(function(assets)
+        {
+            for(var index in assets)
+            {
+                callback(assets[index], asset_id)
+            }
+            resolve(assets)
+        })
+    })
 }
 
-AssetStore.prototype.addAsset = function(asset)
+AssetStore.getAssetFile = function(asset, file_type)
+{
+    return new Bluebird(function(resolve, reject)
+    {
+        if(["mp4", "webm", "ogv"].indexOf(file_type) == -1)
+        {
+            reject("Unsupported Filetype")
+        }
+        else
+        {
+            AssetStore.getAsset(asset).then(function(asset)
+            {
+                resolve(asset.files[file_type])
+            })
+            .catch(function(error)
+            {
+                reject(error)
+            })
+        }
+    })
+}
+
+AssetStore.addAsset = function(asset)
 {
     return new Bluebird(function(resolve, reject)
     {
@@ -70,77 +93,99 @@ AssetStore.prototype.addAsset = function(asset)
         {
             asset = new Object()
         }
-        if(asset.asset_id === undefined)
+        
+        asset.asset_id = uuid.v4()
+        asset.date_created = Date.now()
+        asset.date_touched = Date.now()
+        
+        Database.assets.save(asset, function()
         {
-            asset.asset_id = uuid.v4()
-        }
-        if(asset.dates === undefined)
-        {
-            asset.dates = new Object()
-        }
-        if(asset.dates.created === undefined)
-        {
-            asset.dates.created = Date.now()
-        }
-        if(asset.dates.touched === undefined)
-        {
-            asset.dates.touched = Date.now()
-        }
-        if(asset.files === undefined)
-        {
-            asset.files = new Object()
-        }
-
-        this.assets[asset.asset_id] = asset
-        this.trigger("add asset", asset)
-        resolve(asset.asset_id)
-    }
-    .bind(this))
+            trigger("add asset", asset)
+            resolve(asset)
+        })
+    })
 }
 
-AssetStore.prototype.updateAsset = function(asset_id, reasset)
+AssetStore.updateAsset = function(asset, updates)
 {
     return new Bluebird(function(resolve, reject)
     {
-        var asset = this.assets[asset_id]
-        this.assets[asset_id] = deepmerge(asset, reasset)
-        this.trigger("update asset", this.assets[asset_id])
-        resolve(asset_id)
-    }
-    .bind(this))
+        Database.assets.update(asset, updates, {multi: false}, function(error, asset)
+        {
+            trigger("update asset", assets)
+            resolve(assets)
+        })
+    })
 }
 
-AssetStore.prototype.nukeAssets = function()
+AssetStore.deleteAsset = function(asset)
 {
     return new Bluebird(function(resolve, reject)
     {
-        this.assets = {}
-
-        this.trigger("nuke assets", this.assets)
-        return this.assets
-    }
-    .bind(this))
-}
-
-AssetStore.prototype.trigger = function(action, data)
-{
-    if(this.listeners[action])
-    {
-        for(var index in this.listeners[action])
+        AssetStore.getAsset(asset).then(function(asset)
         {
-            this.listeners[action][index](data)
-        }
-    }
+            Database.assets.remove(asset, true, function(error)
+            {
+                if(error)
+                {
+                    reject(error)
+                }
+                else
+                {
+                    trigger("delete asset")
+                    resolve(asset)
+                }
+            })
+        })
+        .catch(function(error)
+        {
+            reject(error)
+        })
+    })
 }
 
-AssetStore.prototype.on = function(action, listener)
+AssetStore.deleteAllAssets = function()
 {
-    if(!this.listeners[action])
+    return new Bluebird(function(resolve, reject)
     {
-        this.listeners[action] = []
-    }
-
-    this.listeners[action].push(listener)
+        AssetStore.getAllAssets().then(function(assets)
+        {
+            Database.assets.remove({}, function(error)
+            {
+                if(error)
+                {
+                    reject(error)
+                }
+                else
+                {
+                    trigger("delete all assets")
+                    resolve(assets)
+                }
+            })
+        })
+        .catch(function(error)
+        {
+            reject(error)
+        })
+    })
 }
 
-module.exports = new AssetStore()
+AssetStore.trigger = function(action, data)
+{
+    for(var index in this.listeners)
+    {
+        AssetStore.listeners[index](action, data)
+    }
+}
+
+AssetStore.on = function(action, listener)
+{
+    if(!AssetStore.listeners)
+    {
+        AssetStore.listeners = new Array()
+    }
+    AssetStore.listeners.push(listener)
+}
+var trigger = AssetStore.trigger
+
+module.exports = AssetStore
