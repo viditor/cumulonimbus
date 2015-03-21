@@ -1,10 +1,9 @@
-var deepmerge = require("deepmerge")
+var UUID = require("node-uuid")
+var MongoJS = require("mongojs")
 var Bluebird = require("bluebird")
-var uuid = require("node-uuid")
-var mongojs = require("mongojs")
 
-Database = mongojs("localhost", ["assets"])
-Database.dropDatabase()
+Database = MongoJS("localhost", ["assets"])
+Database.dropDatabase() //for debugging :)
 
 var AssetStore = new Object()
 
@@ -94,7 +93,7 @@ AssetStore.addAsset = function(asset)
             asset = new Object()
         }
         
-        asset.asset_id = uuid.v4()
+        asset.asset_id = UUID.v4()
         asset.date_created = Date.now()
         asset.date_touched = Date.now()
         
@@ -177,6 +176,7 @@ AssetStore.trigger = function(action, data)
         AssetStore.listeners[index](action, data)
     }
 }
+var trigger = AssetStore.trigger
 
 AssetStore.on = function(action, listener)
 {
@@ -186,6 +186,5 @@ AssetStore.on = function(action, listener)
     }
     AssetStore.listeners.push(listener)
 }
-var trigger = AssetStore.trigger
 
 module.exports = AssetStore
