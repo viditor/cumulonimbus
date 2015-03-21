@@ -109,21 +109,13 @@ describe("flattener.process.js", function()
         var inputA = createTestClip("AAAA", 0);
         var inputB = createTestClip("  BBBB", 1);
 
-        var outputA = cloneAndEdit(inputA, {"trim": {"left": 0, "right": 2000}});
-
-        var outputAB = cloneAndEdit(inputB,
-        {
-            "track": 0,
-            "length": 2000,
-            "subclips":
-            [
-                cloneAndEdit(inputA, {"trim": {"left": 2000, "right": 0}}),
-                cloneAndEdit(inputB, {"trim": {"left": 0, "right": 2000}}),
-            ]
-        });
-        tagAsContainer(outputAB);
-
-        var outputB = cloneAndEdit(inputB, {"track":0, "trim": {"left": 2000, "right": 0}});
+        var outputA = createTestClip("AAaa", 0);
+        var outputAB = createTestContainer(2000, 2000, 
+        [
+            createTestClip("aaAA", 0),
+            createTestClip("  BBbb", 1)
+        ]);
+        var outputB = createTestClip("  bbBB", 0);
         
         var input =  [inputA, inputB];
         var output = [outputA, outputAB, outputB];
@@ -143,33 +135,19 @@ describe("flattener.process.js", function()
         var inputA = createTestClip("   AAAA", 0);
         var inputC = createTestClip("      CCCC", 1);
 
-        var outputB = cloneAndEdit(inputB, {"trim": {"left": 0, "right": 1000}, "track": 0});
-        var outputA = cloneAndEdit(inputA, {"trim": {"left": 1000, "right": 1000}, "track": 0});
-        var outputC = cloneAndEdit(inputC, {"trim": {"left": 1000, "right": 0}, "track": 0});
-
-        var outputAB = cloneAndEdit(inputA,
-        {
-            "track": 0,
-            "length": 1000, 
-            "subclips":
-            [
-                cloneAndEdit(inputA, {"trim": {"left": 0, "right": 3000}}),
-                cloneAndEdit(inputB, {"trim": {"left": 3000, "right": 0}})
-            ]
-        });
-        tagAsContainer(outputAB);
-
-        var outputAC = cloneAndEdit(inputC,
-        {
-            "track": 0,
-            "length": 1000, 
-            "subclips":
-            [
-                cloneAndEdit(inputA, {"trim": {"left": 3000, "right": 0}}),
-                cloneAndEdit(inputC, {"trim": {"left": 0, "right": 3000}}),
-            ]
-        });
-        tagAsContainer(outputAC);
+        var outputB = createTestClip("BBBb", 0);
+        var outputAB = createTestContainer(3000, 1000,
+        [
+            createTestClip("   Aaaa", 0),
+            createTestClip("bbbB", 1)
+        ]);
+        var outputA = createTestClip("   aAAa", 0);
+        var outputAC = createTestContainer(6000, 1000,
+        [
+            createTestClip("   aaaA", 0),
+            createTestClip("      Cccc", 1)
+        ]);
+        var outputC = createTestClip("      cCCC", 0);
 
         var input =  [inputB, inputA, inputC];
         var output = [outputB, outputAB, outputA, outputAC, outputC];
@@ -480,16 +458,19 @@ function cloneClip(clip)
 {
     return JSON.parse(JSON.stringify(clip));
 }
+
 // Configures a clone of a clip object
 function cloneAndEdit(clip, options)
 {
     return editClip(cloneClip(clip), options);
 }
 
+
 // Creates a test clip by looking at code string and track integer
 function createTestClip(code, track)
 {
     var name = leftTrim(code);
+    var letter = name[0].toUpperCase();
     var leftSpaceLength = code.length - name.length;
     
     // Determine left and right trim from code
@@ -512,8 +493,8 @@ function createTestClip(code, track)
     }
 
     var testClip = {
-        "_id": "test-" + name,
-        "asset_id": "test-" + name,
+        "_id": "test-" + letter,
+        "asset_id": "test-" + letter,
         "project_id": "test",
         "trim": trim,
         "tick": leftSpaceLength * 1000,
@@ -527,6 +508,21 @@ function createTestClip(code, track)
     }
 
     return testClip;
+}
+
+// Creates a test clip container from a tick, a length, and an array of subclips
+function createTestContainer(tick, length, subclips)
+{
+    return {
+        "_id": "[container]",
+        "asset_id": "[container]",
+        "project_id": "test",
+        "trim": {"left": 0, "right": 0},
+        "tick": tick,
+        "length": length,
+        "track": 0,
+        "subclips": subclips
+    };
 }
 
 function leftTrim(str)
