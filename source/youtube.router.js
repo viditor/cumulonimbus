@@ -1,95 +1,92 @@
-var fs = require("fs");
-var path = require("path");
-var youtube = require("./youtube.process");
-var mongoose = require("mongoose");
+var fs = require("fs")
+var path = require("path")
+var express = require("express")
+var mongoose = require("mongoose")
 
-var router = require("express").Router();
+var AssetStore = require("./asset.store.js")
+var YoutubeUtils = require("./youtube.process.js")
+
+var router = express.Router()
 
 router["get"]("/", function(request, response)
 {
-    mongoose.model("Asset").find(function(error, data)
+    AssetStore.getAllAssets().then(function(assets)
     {
-        if(error || !data)
-        {
-            response.status(404).send("Could not get list of assets.");
-        }
-        else
-        {
-            response.send(data);
-        }
+        response.status(200).send(assets)
     })
-});
-
-router["get"]("/:ytid.:ext", function(request, response, next)
-{
-    var ytid = request.params.ytid;
-    var ext = request.params.ext;
-    
-    if(["mp4", "webm", "ogv"].indexOf(ext) == -1)
+    .catch(function(error)
     {
-        response.status(400).send("Unsupported Filetype");
+        response.status(400).send(error)
+    })
+})
+
+router["get"]("/:ytid.:type", function(request, response, next)
+{
+    var youtube_id = request.params.ytid
+    var file_type = request.params.type
+    
+    if(["mp4", "webm", "ogv"].indexOf(file_type) == -1)
+    {
+        response.status(400).send("Unsupported Filetype")
     }
     else
     {
-        response.send("get a youtube video file");
-        //asset.touch();
+        AssetStore.getAsset({youtube_id: youtube_id}).then(function(asset)
+        {
+            if(asset.files[file_type])
+            {
+                response.status(200).send(asset.files[file_type])
+            }
+            else
+            {
+                response.status(400).send("Nontranscoded Filetype")
+            }
+        })
+        .catch(function(error)
+        {
+            response.status(400).send(error)
+        })
     }
-});
+})
 
 router["get"]("/:ytid", function(request, response)
 {
-    var _ytid = request.params.ytid;
+    var youtube_id = request.params.ytid
 
-    mongoose.model("Asset").findOne({ytid: _ytid}, function(findError, asset)
+    AssetStore.getAsset(youtube_id).then(function(assets)
     {
-
-        if(findError || !asset)
-        {
-            response.send("Video with ytid " + _ytid + " is not on the server.");
-        }
-        else
-        {
-            asset.touch();
-            response.send(asset);
-        }
+        response.status(200).send(assets)
     })
-});
+    .catch(function(error)
+    {
+        response.status(400).send(error)
+    })
+})
 
 router["post"]("/:ytid", function(request, response)
 {
-    var _ytid = request.params.ytid;
+    var youtube_id = request.params.ytid
 
-    console.log(Date.now(), "Beginning Youtube Download");
-    youtube.download(_ytid).then(function()
+    //todo: check if youtube_id is valid.
+    //todo: check that the asset doesn't already exist.
+
+    AssetStore.addAsset().then(function(asset_id)
     {
-        console.log(Date.now(), "Finishing Youtube Download");
-
-        mongoose.model("Asset").create
-        ({
-            ytid: _ytid,
-            files:
-            {
-                original: "",
-                mp4: "",
-                webm: "", 
-                ogv: ""
-            },
-            dates:
-            {
-                created: Date.now(),
-                touched: Date.now()
-            }
-        });
+        response.status(200).send({asset_id: asset_id})
+        return YoutubeUtils.download(asset_id, youtube_id)
     })
-
-    response.send("Downloading http://www.youtube.com/watch?v=" + _ytid + " to the server.");
-});
+    .then(function(asset_id)
+    {
+        return asset_id
+        //todo: transcode the asset into other formats.
+    })
+})
 
 router["delete"]("/:ytid", function(request, response)
 {
-    var _ytid = request.params.ytid;
+    var youtube_id = request.params.ytid
     
-    response.send("add a youtube video");
-});
+    response.send("Deleting " + youtube_id)
+})
 
-module.exports = router;
+module.exports = router

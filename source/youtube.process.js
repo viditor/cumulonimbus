@@ -1,45 +1,61 @@
-var fs = require("fs");
-var path = require("path");
+var fs = require("fs")
+var path = require("path")
+var ytdl = require("ytdl-core")
+var Bluebird = require("bluebird")
+var AssetStore = require("./asset.store.js")
 
-var ytdl = require("ytdl-core");
-var Bluebird = require("bluebird");
-
-module.exports.download = function(ytid)
+module.exports.download = function(asset_id, youtube_id)
 {
     return new Bluebird(function(resolve, reject)
     {
-        var ASSETS_DIRECTORY = path.join(__dirname, "/../assets");
-        
-        if(!fs.existsSync(ASSETS_DIRECTORY))
-        {
-            fs.mkdir(ASSETS_DIRECTORY);
-        }
+        var ASSETS_DIRECTORY = path.join(__dirname, "/../assets")
+        if(!fs.existsSync(ASSETS_DIRECTORY)) {
+            fs.mkdir(ASSETS_DIRECTORY)
+        }        
 
-        var file = path.join(ASSETS_DIRECTORY, ytid + ".flv");
-        var yturl = "http://www.youtube.com/watch?v=" + ytid;
+        var file_path = path.join(ASSETS_DIRECTORY, youtube_id + ".flv")
+        var youtube_url = "http://www.youtube.com/watch?v=" + youtube_id
 
-        var process = ytdl(yturl);
+        AssetStore.updateAsset(asset_id, {"youtube_id": youtube_id})
+
+        var downloading = ytdl(youtube_url, {quality: 5})
         
-        /*process.on("data", function(data)
+        downloading.on("info", function(info, format)
         {
-            console.log(data);
-        });*/
+            if(info.title)
+            {
+                AssetStore.updateAsset(asset_id, {"title": info.title})
+            }
+            if(info.length_seconds)
+            {
+                AssetStore.updateAsset(asset_id, {"length": info.length_seconds})
+            }
+            if(info.thumbnail_url)
+            {
+                AssetStore.updateAsset(asset_id, {"thumbnail": info.thumbnail_url})
+            }
+
+            var current_amount = 0
+            var total_amount = format.size
+            downloading.on("data", function(data)
+            {
+                current_amount += data.length
+                var progress = (current_amount / total_amount) * 100
+                AssetStore.updateAsset(asset_id, {"progress": progress})
+            })
+        })
         
-        /*process.on("info", function(info)
+        downloading.on("error", function(error)
         {
-            console.log(info);
-        });*/
+            reject(error)
+        })
         
-        process.on("error", function(error)
+        downloading.on("end", function()
         {
-            reject(error);
-        });
+            AssetStore.updateAsset(asset_id, {"files": {"flv": file_path}})
+            resolve(asset_id)
+        })
         
-        process.on("end", function()
-        {
-            resolve(file);
-        });
-        
-        process.pipe(fs.createWriteStream(file));
-    });
+        downloading.pipe(fs.createWriteStream(file_path))
+    })
 }
