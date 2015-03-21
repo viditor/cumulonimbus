@@ -48,9 +48,9 @@ router["post"]("/:ytid", function(request, response)
 {
     var youtube_id = request.params.ytid
     
-    AssetStore.addAsset({youtube_id: youtube_id}).then(function(asset_id)
+    AssetStore.addYoutubeAsset(youtube_id).then(function(asset)
     {
-        response.status(200).send({asset_id: asset_id})
+        response.status(200).send(asset)
     })
     .catch(function(error)
     {

@@ -1,6 +1,7 @@
 var UUID = require("node-uuid")
 var MongoJS = require("mongojs")
 var Bluebird = require("bluebird")
+var YoutubeUtils = require("./youtube.process.js")
 
 Database = MongoJS("localhost", ["assets"])
 Database.dropDatabase() //for debugging :)
@@ -105,14 +106,40 @@ AssetStore.addAsset = function(asset)
     })
 }
 
+AssetStore.addYoutubeAsset = function(youtube_id)
+{
+    return new Bluebird(function(resolve, reject)
+    {
+        if(youtube_id.length != 11)
+        {
+            reject("Invalid Youtube ID")
+        }
+        else
+        {
+            AssetStore.addAsset({youtube_id: youtube_id}).then(function(asset)
+            {
+                YoutubeUtils.download(youtube_id, function(updates)
+                {
+                    return AssetStore.updateAsset({asset_id: asset.asset_id}, updates)
+                })
+                resolve(asset)
+            })
+            .catch(function(error)
+            {
+                reject(error)
+            })
+        }
+    })
+}
+
 AssetStore.updateAsset = function(asset, updates)
 {
     return new Bluebird(function(resolve, reject)
     {
-        Database.assets.update(asset, updates, {multi: false}, function(error, asset)
+        Database.assets.findAndModify({query: asset, update: {$set: updates}, new: true}, function(error, asset)
         {
-            trigger("update asset", assets)
-            resolve(assets)
+            trigger("update asset", asset)
+            resolve(asset)
         })
     })
 }
