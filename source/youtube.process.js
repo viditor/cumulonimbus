@@ -3,7 +3,7 @@ var path = require("path")
 var Bluebird = require("bluebird")
 var YoutubeDownloader = require("ytdl-core")
 
-module.exports.download = function(youtube_id, update_asset)
+module.exports.download = function(youtube_id, asset_id, updateAsset)
 {
     return new Bluebird(function(resolve, reject)
     {
@@ -13,9 +13,9 @@ module.exports.download = function(youtube_id, update_asset)
             fs.mkdir(ASSETS_DIRECTORY)
         }        
         
-        var file_path = path.join(ASSETS_DIRECTORY, youtube_id + ".flv")
+        var file_path = path.join(ASSETS_DIRECTORY, asset_id + ".flv")
         var youtube_url = "http://www.youtube.com/watch?v=" + youtube_id
-        update_asset({"youtube_id": youtube_id, "youtube_url": youtube_url})
+        updateAsset({"youtube_id": youtube_id, "youtube_url": youtube_url})
         
         var downloading = YoutubeDownloader(youtube_url, {quality: 5})
         
@@ -23,15 +23,15 @@ module.exports.download = function(youtube_id, update_asset)
         {
             if(info.title)
             {
-                update_asset({"title": info.title})
+                updateAsset({"title": info.title})
             }
             if(info.length_seconds)
             {
-                update_asset({"length": info.length_seconds})
+                updateAsset({"length": info.length_seconds})
             }
             if(info.thumbnail_url)
             {
-                update_asset({"thumbnail": info.thumbnail_url})
+                updateAsset({"thumbnail": info.thumbnail_url})
             }
             
             var current_amount = 0
@@ -40,7 +40,7 @@ module.exports.download = function(youtube_id, update_asset)
             {
                 current_amount += data.length
                 var progress = (current_amount / total_amount) * 100
-                update_asset({"progress": progress})
+                updateAsset({"progress": progress})
             })
         })
         
@@ -51,7 +51,7 @@ module.exports.download = function(youtube_id, update_asset)
         
         downloading.on("end", function()
         {
-            update_asset({"files": {"flv": file_path}}).then(function(asset)
+            updateAsset({"files": {"flv": file_path}}).then(function(asset)
             {
                 resolve(asset)
             })

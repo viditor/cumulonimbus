@@ -1,6 +1,8 @@
+var path = require("path")
 var UUID = require("node-uuid")
 var MongoJS = require("mongojs")
 var Bluebird = require("bluebird")
+var FfmpegUtils = require("./ffmpeg.process.js")
 var YoutubeUtils = require("./youtube.process.js")
 
 Database = MongoJS("localhost", ["assets"])
@@ -118,9 +120,18 @@ AssetStore.addYoutubeAsset = function(youtube_id)
         {
             AssetStore.addAsset({youtube_id: youtube_id}).then(function(asset)
             {
-                YoutubeUtils.download(youtube_id, function(updates)
+                YoutubeUtils.download(youtube_id, asset.asset_id, function(updates)
                 {
                     return AssetStore.updateAsset({asset_id: asset.asset_id}, updates)
+                })
+                .then(function(asset)
+                {
+                    var assets_directory = path.join(__dirname, "/../assets")
+                    return FfmpegUtils.webtranscode(assets_directory, asset.asset_id)
+                })
+                .then(function(files)
+                {
+                    console.log("done!", files)
                 })
                 resolve(asset)
             })
