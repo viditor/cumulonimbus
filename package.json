@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "bluebird": "^2.8.2",
-    "deepmerge": "^0.2.7",
     "express": "~4.10.6",
     "fluent-ffmpeg": "~2.0.0-rc3",
     "mongojs": "~0.18.2",
