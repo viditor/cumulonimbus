@@ -225,4 +225,9 @@ AssetStore.on = function(action, listener)
     AssetStore.listeners.push(listener)
 }
 
+AssetStore.stop = function()
+{
+    Database.close()
+}
+
 module.exports = AssetStore
