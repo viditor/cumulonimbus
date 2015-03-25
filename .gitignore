@@ -1,8 +1,12 @@
 node_modules
+
 *~
 #*#
 #*#~
-mailKeys.js
-assets
-.DS_Store
 *.log
+.DS_Store
+
+mailKeys.js
+
+assets
+clips

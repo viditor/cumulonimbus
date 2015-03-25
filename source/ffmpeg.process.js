@@ -81,18 +81,6 @@ module.exports.transcode = function(directory, file_handle,
  * - file_handle (String)
  * The name of the video *without* any
  * extensions; "foo" not "foo.mp4".
- * - input_format (String)
- * The format of the video before it is
- * transcoded, like "flv" or "avi".
- * - output_format (String)
- * The format of the video after it has
- * been transcoded, like "mp4" or "ogv".
- * - video_codec (String)(Optional)
- * The name of a video codec that is
- * supported by FFMPEG.
- * - audio_codec (String)(Optional)
- * The name of an audio codec that is
- * supported by FFMPEG.
  *
  * OUTPUT
  * - A promise that will resolve when
@@ -113,10 +101,3 @@ module.exports.webtranscode = function(directory, file_handle)
     
     return Bluebird.all(transcodings);
 }
-
-module.exports.trim = function(asset_path, clip_path, left_trim, right_trim)
-{
-    console.log(asset_path, clip_path, left_trim, right_trim);
-}
-
-module.exports.trim("../assets/UiyDmqO59QE.flv", "../clips/1.flv", 1, 2);

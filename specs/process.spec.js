@@ -10,9 +10,16 @@ describe("youtube.process.js", function()
 {
     it("can download videos from youtube", function(done)
     {
-        youtube.download("UiyDmqO59QE").then(function(file)
+        youtube.download("UiyDmqO59QE", "66770728-6095-4476-af0f-cd121605ec21", function(asset)
         {
-            expect(file).toEqual(path.join(__dirname, "../assets/UiyDmqO59QE.flv"));
+            return new Bluebird(function(resolve)
+            {
+                resolve(asset)
+            })
+        })
+        .then(function(asset)
+        {
+            expect(asset.files["flv"]).toEqual(path.join(__dirname, "../assets/66770728-6095-4476-af0f-cd121605ec21.flv"));
         })
         .finally(function()
         {
