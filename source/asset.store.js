@@ -2,7 +2,7 @@ var path = require("path")
 var UUID = require("node-uuid")
 var MongoJS = require("mongojs")
 var Bluebird = require("bluebird")
-var FfmpegUtils = require("./ffmpeg.process.js")
+var FfmpegUtils = require("./fluently.process.js")
 var YoutubeUtils = require("./youtube.process.js")
 
 Database = MongoJS("localhost", ["assets"])

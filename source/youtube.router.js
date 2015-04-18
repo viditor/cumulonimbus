@@ -1,5 +1,9 @@
+var fs = require("fs")
 var express = require("express")
+var DataURI = require("datauri").promises
 var AssetStore = require("./asset.store.js")
+var YoutubeUtils = require("./youtube.process.js")
+var FluentlyUtils = require("./fluently.process.js")
 
 var router = express.Router()
 
@@ -15,24 +19,32 @@ router["get"]("/", function(request, response)
     })
 })
 
-router["get"]("/:ytid.:type", function(request, response, next)
-{
-    var youtube_id = request.params.ytid
-    var file_type = request.params.type
-    
-    AssetStore.getAssetFile({youtube_id: youtube_id}, file_type).then(function(asset_file)
-    {
-        response.status(200).send(asset_file)
-    })
-    .catch(function(error)
-    {
-        response.status(400).send(error)
+router["get"]("/:youtube_id.:file_format", function(request, response) {
+    var youtube_id = request.params.youtube_id
+    var file_format = request.params.file_format
+    YoutubeUtils.download(youtube_id).then(function(video) {
+        return FluentlyUtils.transcode(video.file_path, file_format).then(function(file_path) {
+            video.initial_file_path = video.file_path
+            video.file_path = file_path
+            return video
+        })
+    }).then(function(video) {
+        return DataURI(video.file_path).then(function(content) {
+            video.file_content = content
+            return video
+        })
+    }).then(function(video) {
+        response.send(video)
+        return video
+    }).then(function(video) {
+        fs.unlink(video.initial_file_path)
+        fs.unlink(video.file_path)
     })
 })
 
-router["get"]("/:ytid", function(request, response)
+router["get"]("/:youtube_id", function(request, response)
 {
-    var youtube_id = request.params.ytid
+    var youtube_id = request.params.youtube_id
 
     AssetStore.getAsset({youtube_id: youtube_id}).then(function(asset)
     {

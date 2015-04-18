@@ -1,5 +1,6 @@
-var Bluebird = require("bluebird");
-var ffmpeg = require("fluent-ffmpeg");
+var path = require("path")
+var Bluebird = require("bluebird")
+var Fluently = require("fluent-ffmpeg")
 
 /**
  * TRANSCODE: decodes and encodes a
@@ -11,7 +12,7 @@ var ffmpeg = require("fluent-ffmpeg");
  * the transcoded file will be pushed.
  * - file_handle (String)
  * The name of the video *without* any
- * extensions; "foo" not "foo.mp4".
+ * extensions "foo" not "foo.mp4".
  * - input_format (String)
  * The format of the video before it is
  * transcoded, like "flv" or "avi".
@@ -20,10 +21,10 @@ var ffmpeg = require("fluent-ffmpeg");
  * been transcoded, like "mp4" or "ogv".
  * - video_codec (String)(Optional)
  * The name of a video codec that is
- * supported by FFMPEG.
+ * supported by Fluently.
  * - audio_codec (String)(Optional)
  * The name of an audio codec that is
- * supported by FFMPEG.
+ * supported by Fluently.
  *
  * OUTPUT
  * - A promise that will resolve when
@@ -31,41 +32,39 @@ var ffmpeg = require("fluent-ffmpeg");
  * returns a filepath to the newly
  * transcoded video.
  */
- 
-module.exports.transcode = function(directory, file_handle,
-                                    input_format, output_format,
-                                    video_codec, audio_codec)
-{
-    return new Bluebird(function(resolve, reject)
-    {
-        var transcoding = ffmpeg();
-        
-        var input_file = directory + "/" + file_handle + "." + input_format;
-        var output_file = directory + "/" + file_handle + "." + output_format;
-        
-        transcoding.input(input_file);
-        transcoding.output(output_file);
-        
-        if(video_codec)
-        {
-            transcoding.videoCodec(video_codec);
-        }
-        if(audio_codec)
-        {
-            transcoding.audioCodec(audio_codec);
-        }
-        
-        transcoding.on("error", function(error)
-        {
-            reject(error);
-        });
-        
-        transcoding.on("end", function()
-        {
-            resolve(output_file);
-        });
 
-        transcoding.run();
+module.exports.transcode = function(file_path, file_format, codecs) {
+    return new Bluebird(function(resolve, reject) {
+        
+        var directory = path.dirname(file_path)
+        var initial_file_format = path.extname(file_path).substring(1)
+        var file_handle = path.basename(file_path, "." + initial_file_format)
+        
+        var input_file_path = path.join(directory, file_handle + "." + initial_file_format)
+        var output_file_path = path.join(directory, file_handle + "." + file_format)
+        
+        var process = new Fluently()
+        
+        process.input(input_file_path)
+        process.output(output_file_path)
+        
+        if(codecs) {
+            if(codecs.forVideo) {
+                process.videoCodec(codecs.video)
+            }
+            if(codecs.forAudio) {
+                process.audioCodec(codecs.audio)
+            }
+        }
+        
+        process.on("error", function(error) {
+            reject(error)
+        })
+        process.on("end", function() {
+            resolve(output_file_path)
+        })
+
+        process.run()
     })
 }
 
@@ -80,7 +79,7 @@ module.exports.transcode = function(directory, file_handle,
  * the transcoded file will be pushed.
  * - file_handle (String)
  * The name of the video *without* any
- * extensions; "foo" not "foo.mp4".
+ * extensions "foo" not "foo.mp4".
  *
  * OUTPUT
  * - A promise that will resolve when
@@ -97,7 +96,7 @@ module.exports.webtranscode = function(directory, file_handle)
         module.exports.transcode(directory, file_handle, "flv", "mp4", "libx264"),
         module.exports.transcode(directory, file_handle, "flv", "webm", "libvpx", "libvorbis"),
         module.exports.transcode(directory, file_handle, "flv", "ogv", "libtheora", "libvorbis")
-    ];
+    ]
     
-    return Bluebird.all(transcodings);
+    return Bluebird.all(transcodings)
 }
