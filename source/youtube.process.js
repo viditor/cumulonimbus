@@ -36,3 +36,6 @@ module.exports.download = function(youtube_id) {
         process.pipe(fs.createWriteStream(video.file_path))
     })
 }
+
+//todo: handle invalid youtube_urls
+//todo: select any quality, not just 5

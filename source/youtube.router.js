@@ -30,15 +30,19 @@ router["get"]("/:youtube_id.:file_format", function(request, response) {
         })
     }).then(function(video) {
         return DataURI(video.file_path).then(function(content) {
-            video.file_content = content
+            video.content = content
             return video
         })
     }).then(function(video) {
-        response.send(video)
-        return video
-    }).then(function(video) {
         fs.unlink(video.initial_file_path)
         fs.unlink(video.file_path)
+        delete video.initial_file_path
+        delete video.file_path
+        return video
+    }).then(function(video) {
+        response.status(200).send(video)
+    }).catch(function(error) {
+        response.status(400).send(error)
     })
 })
 
