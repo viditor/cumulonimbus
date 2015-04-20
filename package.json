@@ -27,6 +27,8 @@
   },
   "dependencies": {
     "bluebird": "^2.8.2",
+    "body-parser": "^1.12.3",
+    "cors": "^2.5.3",
     "express": "~4.10.6",
     "fluent-ffmpeg": "~2.0.0-rc3",
     "mongojs": "~0.18.2",

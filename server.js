@@ -3,6 +3,7 @@
 ////////////
 
 var http = require("http")
+var cors = require("cors")
 var express = require("express")
 var socketio = require("socket.io")
 
@@ -14,6 +15,7 @@ var YoutubeUtils = require("./source/youtube.process.js")
 //////////
 
 application = express()
+application["use"](cors())
 application["use"]("/v2", require("./source/router.js"))
 application["use"]("/", require("./source/greet.router.js"))
 application["all"]("*", function(request, response)
@@ -31,38 +33,3 @@ server.listen(port, function()
 {
     console.log("Cumulonimbus is serving at " + port)
 })
-
-//////////////
-//Streaming//
-////////////
-
-io = socketio(server)
-io.on("connection", function(socket)
-{
-    AssetStore.forEachAsset(function(asset)
-    {
-        socket.emit("add asset", asset)
-    })
-    
-    AssetStore.on("add asset", function(asset)
-    {
-        socket.emit("add asset", asset)
-    })
-    
-    AssetStore.on("update asset", function(asset)
-    {
-        socket.emit("update asset", asset)
-    })
-    
-    socket.on("add asset from youtube", function(youtube_id)
-    {
-        AssetStore.addAsset().then(function(asset_id)
-        {
-            return YoutubeUtils.download(asset_id, youtube_id)
-        })
-
-        //todo: DRY this off; this code already lives
-        //in ./youtube.router.js, but is inaccessible.
-    })
-})
-

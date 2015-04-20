@@ -7,6 +7,6 @@ router["get"]("/", function(request, response)
 });
 
 router.use("/youtube", require("./youtube.router.js"));
-//todo: add other routers here
+router.use("/fusion", require("./fusion.router.js"));
 
 module.exports = router;
