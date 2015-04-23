@@ -5,9 +5,6 @@ var Bluebird = require("bluebird")
 var FfmpegUtils = require("./fluently.process.js")
 var YoutubeUtils = require("./youtube.process.js")
 
-Database = MongoJS("localhost", ["assets"])
-Database.dropDatabase() //for debugging :)
-
 var AssetStore = new Object()
 
 AssetStore.getAsset = function(asset)
@@ -95,11 +92,11 @@ AssetStore.addAsset = function(asset)
         {
             asset = new Object()
         }
-        
+
         asset.asset_id = UUID.v4()
         asset.date_created = Date.now()
         asset.date_touched = Date.now()
-        
+
         Database.assets.save(asset, function()
         {
             trigger("add asset", asset)
